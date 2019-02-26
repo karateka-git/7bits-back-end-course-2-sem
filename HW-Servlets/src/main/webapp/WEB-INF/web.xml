@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<web-app>
+    <servlet>
+        <servlet-name>Tasks</servlet-name>
+        <servlet-class>it.sevenbits.homework.servlets.tasks.Tasks</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Tasks</servlet-name>
+        <url-pattern>/tasks/</url-pattern>
+    </servlet-mapping>
+</web-app>
