@@ -1,4 +1,4 @@
-package it.sevenbits.homework.servlets.tasks;
+package it.sevenbits.homework.servlets;
 
 import it.sevenbits.homework.repository.TasksRepository;
 

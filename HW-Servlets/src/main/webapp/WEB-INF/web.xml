@@ -2,7 +2,7 @@
 <web-app>
     <servlet>
         <servlet-name>Tasks</servlet-name>
-        <servlet-class>it.sevenbits.homework.servlets.tasks.Tasks</servlet-class>
+        <servlet-class>it.sevenbits.homework.servlets.Tasks</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Tasks</servlet-name>
