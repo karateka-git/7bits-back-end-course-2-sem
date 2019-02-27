@@ -30,17 +30,18 @@ public class Tasks extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("application/x-www-form-urlencoded");
+        //request.setContentType("application/x-www-form-urlencoded");
         request.setCharacterEncoding("UTF-8");
 
         response.setStatus(201, "Created task");
+        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        BufferedReader reader = new BufferedReader(request.getReader());
-        StringBuilder stringBuilder = new StringBuilder();
-        while(reader.ready()) {
-            stringBuilder.append(reader.readLine());
-        }
-        repository.addTask(stringBuilder.toString());
+        response.setHeader("Location", "item?id=1");
 
+        String name = request.getParameter("name");
+        repository.addTask(name);
+        int index = repository.getSize() - 1;
+        response.getWriter().write(String.format("{ \"id\":\"%d\", \"name\":\"%s\" }",
+                repository.getTask(index).getID(),repository.getTask(index).getName()));
     }
 }
