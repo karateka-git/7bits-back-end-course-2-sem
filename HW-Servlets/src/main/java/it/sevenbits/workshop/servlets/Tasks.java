@@ -1,13 +1,14 @@
-package it.sevenbits.homework.servlets;
+package it.sevenbits.workshop.servlets;
 
-import it.sevenbits.homework.repository.TasksRepository;
+import it.sevenbits.workshop.repository.TasksRepository;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 
 public class Tasks extends HttpServlet {
     private TasksRepository repository = TasksRepository.getInstance();
@@ -20,9 +21,10 @@ public class Tasks extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         response.getWriter().write("[");
-        for (int i = 0; i<repository.getSize(); i++) {
+        Set<Map.Entry<Integer, String>> tasks = repository.getTasks();
+        for (Map.Entry<Integer, String> task : tasks) {
             response.getWriter().write(String.format("{ \"id\":\"%d\", \"name\":\"%s\" }",
-                    repository.getTask(i).getID(),repository.getTask(i).getName()));
+                    task.getKey(), task.getValue()));
         }
         response.getWriter().write("]");
     }
@@ -33,15 +35,15 @@ public class Tasks extends HttpServlet {
         //request.setContentType("application/x-www-form-urlencoded");
         request.setCharacterEncoding("UTF-8");
 
-        response.setStatus(201, "Created task");
+        response.setStatus(201);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Location", "item?id=1");
 
         String name = request.getParameter("name");
         repository.addTask(name);
-        int index = repository.getSize() - 1;
+        int index = repository.getSize();
         response.getWriter().write(String.format("{ \"id\":\"%d\", \"name\":\"%s\" }",
-                repository.getTask(index).getID(),repository.getTask(index).getName()));
+                index,repository.getTask(index)));
     }
 }
