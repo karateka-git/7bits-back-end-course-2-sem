@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class Tasks extends HttpServlet {
     private TasksRepository repository = TasksRepository.getInstance();
@@ -17,9 +18,9 @@ public class Tasks extends HttpServlet {
             throws ServletException, IOException {
 
         response.getWriter().write("[");
-        Set<Map.Entry<Integer, String>> tasks = repository.getTasks();
-        for (Map.Entry<Integer, String> task : tasks) {
-            response.getWriter().write(String.format("{ \"id\":\"%d\", \"name\":\"%s\" }",
+        Set<Map.Entry<UUID, String>> tasks = repository.getTasks();
+        for (Map.Entry<UUID, String> task : tasks) {
+            response.getWriter().write(String.format("{ \"id\":\"%s\", \"name\":\"%s\" }",
                     task.getKey(), task.getValue()));
         }
         response.getWriter().write("]");
@@ -34,10 +35,10 @@ public class Tasks extends HttpServlet {
         try {
             request.setCharacterEncoding("UTF-8");
             String name = request.getParameter("name");
-            int index = repository.addTask(name);
+            UUID index = repository.addTask(name);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(String.format("{ \"id\":\"%d\", \"name\":\"%s\" }",
+            response.getWriter().write(String.format("{ \"id\":\"%s\", \"name\":\"%s\" }",
                     index, repository.getTask(index)));
             response.setStatus(201);
             response.setHeader("Location", "item?id=1");

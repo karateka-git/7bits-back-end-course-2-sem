@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * catch NumberFormatException - if request.getParameter() return null - Bad Request;
@@ -18,11 +19,11 @@ public class Task extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            int id = Integer.parseInt(request.getParameter("taskId"));
+            UUID id = UUID.fromString(request.getParameter("taskId"));
             response.setStatus(200);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(String.format("{ \"id\":\"%d\", \"name\":\"%s\" }",
+            response.getWriter().write(String.format("{ \"id\":\"%s\", \"name\":\"%s\" }",
                     id,repository.getTask(id)));
         } catch (NumberFormatException e) {
             response.setStatus(400);
@@ -37,12 +38,11 @@ public class Task extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            int id = Integer.parseInt(request.getParameter("taskId"));
-            repository.deletedTask(Integer.parseInt(request.getParameter("taskId")));
+            UUID id = repository.deletedTask(UUID.fromString(request.getParameter("taskId")));
             response.setStatus(200);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(String.format("{ \"id\":\"%d\"}", id));
+            response.getWriter().write(String.format("{ \"id\":\"%s\"}", id));
         } catch (NumberFormatException e) {
             response.setStatus(400);
         }  catch (NullPointerException e) {
