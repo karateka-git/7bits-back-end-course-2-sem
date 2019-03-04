@@ -1,6 +1,7 @@
-package it.sevenbits.workshop.servlets;
+package it.sevenbits.homework.servlets;
 
-import it.sevenbits.workshop.repository.TasksRepository;
+import it.sevenbits.homework.repository.CookieRepository;
+import it.sevenbits.homework.repository.TasksRepository;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,11 +12,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class Tasks extends HttpServlet {
+public class ServletTasks extends HttpServlet {
     private TasksRepository repository = TasksRepository.getInstance();
+    private CookieRepository cookieRep= CookieRepository.getInstance();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try {
+            UUID id = UUID.fromString(request.getHeader("Authorization"));
+            cookieRep.getNameCookieUser(id);
+        } catch (NullPointerException e){
+            response.setStatus(401);
+            return;
+        }
 
         response.getWriter().write("[");
         Set<Map.Entry<UUID, String>> tasks = repository.getTasks();
@@ -33,6 +42,14 @@ public class Tasks extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            UUID id = UUID.fromString(request.getHeader("Authorization"));
+            cookieRep.getNameCookieUser(id);
+        } catch (NullPointerException e){
+            response.setStatus(401);
+            return;
+        }
+
+        try {
             request.setCharacterEncoding("UTF-8");
             String name = request.getParameter("name");
             UUID index = repository.addTask(name);
@@ -41,7 +58,7 @@ public class Tasks extends HttpServlet {
             response.getWriter().write(String.format("{ \"id\":\"%s\", \"name\":\"%s\" }",
                     index, repository.getTask(index)));
             response.setStatus(201);
-            response.setHeader("Location", "item?id=1");
+            response.setHeader("Location", String.format("item?id=%s",index));
         } catch (NumberFormatException e) {
             response.setStatus(400);
         }

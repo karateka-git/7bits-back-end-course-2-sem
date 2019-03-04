@@ -2,7 +2,7 @@
 <web-app>
     <servlet>
         <servlet-name>Tasks</servlet-name>
-        <servlet-class>it.sevenbits.workshop.servlets.Tasks</servlet-class>
+        <servlet-class>it.sevenbits.homework.servlets.ServletTasks</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Tasks</servlet-name>
@@ -11,10 +11,19 @@
 
     <servlet>
         <servlet-name>Task</servlet-name>
-        <servlet-class>it.sevenbits.workshop.servlets.Task</servlet-class>
+        <servlet-class>it.sevenbits.homework.servlets.ServletTask</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Task</servlet-name>
         <url-pattern>/task/</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Ident</servlet-name>
+        <servlet-class>it.sevenbits.homework.servlets.ServletCookie</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Ident</servlet-name>
+        <url-pattern>/identification/</url-pattern>
     </servlet-mapping>
 </web-app>

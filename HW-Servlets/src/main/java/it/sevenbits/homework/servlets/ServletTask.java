@@ -1,6 +1,7 @@
-package it.sevenbits.workshop.servlets;
+package it.sevenbits.homework.servlets;
 
-import it.sevenbits.workshop.repository.TasksRepository;
+import it.sevenbits.homework.repository.CookieRepository;
+import it.sevenbits.homework.repository.TasksRepository;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,11 +14,20 @@ import java.util.UUID;
  * catch NumberFormatException - if request.getParameter() return null - Bad Request;
  * catch NullPointerException - if repository.getTask(id) return null - Not Found;
  */
-public class Task extends HttpServlet {
+public class ServletTask extends HttpServlet {
     private TasksRepository repository = TasksRepository.getInstance();
+    private CookieRepository cookieRep= CookieRepository.getInstance();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try {
+            UUID id = UUID.fromString(request.getHeader("Authorization"));
+            cookieRep.getNameCookieUser(id);
+        } catch (NullPointerException e){
+            response.setStatus(401);
+            return;
+        }
+
         try {
             UUID id = UUID.fromString(request.getParameter("taskId"));
             response.setStatus(200);
@@ -30,12 +40,18 @@ public class Task extends HttpServlet {
         } catch (NullPointerException e) {
             response.setStatus(404);
         }
-
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try {
+            UUID id = UUID.fromString(request.getHeader("Authorization"));
+            cookieRep.getNameCookieUser(id);
+        } catch (NullPointerException e){
+            response.setStatus(401);
+            return;
+        }
 
         try {
             UUID id = repository.deletedTask(UUID.fromString(request.getParameter("taskId")));

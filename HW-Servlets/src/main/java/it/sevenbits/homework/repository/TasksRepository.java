@@ -1,4 +1,4 @@
-package it.sevenbits.workshop.repository;
+package it.sevenbits.homework.repository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,9 +50,5 @@ public class TasksRepository {
                 return id;
             }
         }
-    }
-
-    public int getSize() {
-        return tasks.size()-1;
     }
 }
