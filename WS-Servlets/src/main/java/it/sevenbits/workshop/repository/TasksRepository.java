@@ -21,25 +21,35 @@ public class TasksRepository {
         return instance;
     }
 
-    public void addTask(String name) {
+    public int addTask(String name) {
         synchronized (this) {
-            tasks.put(counter, name);
+            int index = counter;
+            tasks.put(index, name);
             counter++;
+            return index;
         }
 
     }
 
-    public String getTask(int id) {
-        return tasks.get(id);
+    public String getTask(int id) throws NullPointerException {
+        if (tasks.get(id).equals("null")){
+            throw new NullPointerException("Object does not exist");
+        } else {
+            return tasks.get(id);
+        }
     }
 
     public Set<Map.Entry<Integer, String>> getTasks() {
         return tasks.entrySet();
     }
 
-    public void deletedTask(int id) {
+    public void deletedTask(int id) throws NullPointerException {
         synchronized (this) {
-            tasks.remove(id);
+            if (tasks.get(id).equals("null")){
+                throw new NullPointerException("Object does not exist");
+            } else {
+                tasks.remove(id);
+            }
         }
     }
 

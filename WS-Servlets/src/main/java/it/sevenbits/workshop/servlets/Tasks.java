@@ -16,10 +16,6 @@ public class Tasks extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        response.setStatus(200);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
         response.getWriter().write("[");
         Set<Map.Entry<Integer, String>> tasks = repository.getTasks();
         for (Map.Entry<Integer, String> task : tasks) {
@@ -27,23 +23,26 @@ public class Tasks extends HttpServlet {
                     task.getKey(), task.getValue()));
         }
         response.getWriter().write("]");
+        response.setStatus(200);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //request.setContentType("application/x-www-form-urlencoded");
-        request.setCharacterEncoding("UTF-8");
-
-        response.setStatus(201);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Location", "item?id=1");
-
-        String name = request.getParameter("name");
-        repository.addTask(name);
-        int index = repository.getSize();
-        response.getWriter().write(String.format("{ \"id\":\"%d\", \"name\":\"%s\" }",
-                index,repository.getTask(index)));
+        try {
+            request.setCharacterEncoding("UTF-8");
+            String name = request.getParameter("name");
+            int index = repository.addTask(name);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(String.format("{ \"id\":\"%d\", \"name\":\"%s\" }",
+                    index, repository.getTask(index)));
+            response.setStatus(201);
+            response.setHeader("Location", "item?id=1");
+        } catch (NumberFormatException e) {
+            response.setStatus(400);
+        }
     }
 }
