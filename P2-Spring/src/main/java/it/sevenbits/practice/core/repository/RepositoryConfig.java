@@ -1,4 +1,4 @@
-package it.sevenbits.practice.repository;
+package it.sevenbits.practice.core.repository;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RepositoryConfig {
     @Bean
-    public ItemsRepository itemsRepository() {
-        return new SimpleItemsRepository();
+    public TaskRepository taskRepository() {
+        return new SimpleTaskRepository();
     }
 }
