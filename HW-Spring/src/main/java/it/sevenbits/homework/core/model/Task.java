@@ -2,15 +2,17 @@ package it.sevenbits.homework.core.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import it.sevenbits.homework.core.repository.validation.StatusConstraint;
 
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class Task {
     private final UUID id;
     private enum enumStatus {inbox, done}
-    
-    private enumStatus status;
+    @StatusConstraint(enumClass=enumStatus.class)
+    private String status;
     @NotNull
     private final String text;
 
@@ -18,7 +20,8 @@ public class Task {
     public Task(@JsonProperty("id") UUID id, @JsonProperty("text") String text, @JsonProperty("status") String status) {
         this.id = id;
         this.text = text;
-        this.status = enumStatus.valueOf(status);
+        this.status = status;
+
     }
     public UUID getId() {
         return id;
