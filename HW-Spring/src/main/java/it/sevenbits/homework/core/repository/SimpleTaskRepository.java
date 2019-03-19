@@ -14,6 +14,17 @@ public class SimpleTaskRepository implements TaskRepository {
     public List<Task> getAllItems() {
         return Collections.unmodifiableList(tasks);
     }
+
+    @Override
+    public Task getTask(String id) {
+        for(Task task:tasks) {
+            if (id.equals(task.getId().toString())) {
+                return task;
+            }
+        }
+        throw new IndexOutOfBoundsException("Task not found.");
+    }
+
     @Override
     public Task create(Task task) {
         Task newTask = new Task(getNextID(), task.getText(), task.getStatus());

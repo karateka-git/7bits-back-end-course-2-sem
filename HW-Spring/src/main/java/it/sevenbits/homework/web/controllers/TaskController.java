@@ -9,9 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServlet;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/tasks")
@@ -38,6 +40,16 @@ public class TaskController {
                 .path(String.valueOf(createdTask.getId()))
                 .build().toUri();
         return ResponseEntity.created(location).body(createdTask);
+    }
+
+    @RequestMapping(value = "/{taskID}",method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity getTask(@PathVariable("taskID") String uuid) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(taskRepository.getTask(uuid));
+        } catch (IndexOutOfBoundsException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }
 

@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface TaskRepository {
     List<Task> getAllItems();
+    Task getTask(String id);
     Task create(Task task);
 }
