@@ -8,4 +8,5 @@ public interface TaskRepository {
     List<Task> getAllItems();
     Task getTask(String id);
     Task create(Task task);
+    Task deleteTask(String id);
 }

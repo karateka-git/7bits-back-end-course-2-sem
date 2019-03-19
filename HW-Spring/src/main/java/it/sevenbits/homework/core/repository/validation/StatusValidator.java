@@ -15,6 +15,9 @@ public class StatusValidator implements
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
         boolean result = false;
+        if(value == null) {
+            return false;
+        }
 
         Object[] enumValues = this.annotation.enumClass().getEnumConstants();
 
@@ -22,8 +25,7 @@ public class StatusValidator implements
         {
             for(Object enumValue:enumValues)
             {
-                if(value.equals(enumValue.toString())
-                        || (this.annotation.ignoreCase() && value.equalsIgnoreCase(enumValue.toString())))
+                if(value.equals(enumValue.toString()))
                 {
                     result = true;
                     break;

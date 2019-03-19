@@ -13,5 +13,4 @@ public @interface StatusConstraint {
     String message() default "Value status is not valid.";
     Class<?>[]groups() default {};
     Class<? extends Payload>[]payload() default {};
-    boolean ignoreCase() default false;  // ignoring case of the values being matched
 }

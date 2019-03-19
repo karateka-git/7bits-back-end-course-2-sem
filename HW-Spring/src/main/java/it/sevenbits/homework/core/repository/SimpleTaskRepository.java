@@ -27,10 +27,22 @@ public class SimpleTaskRepository implements TaskRepository {
 
     @Override
     public Task create(Task task) {
-        Task newTask = new Task(getNextID(), task.getText(), task.getStatus());
+        Task newTask = new Task(getNextID(), task.getText());
         tasks.add(newTask);
         return newTask;
     }
+
+    @Override
+    public Task deleteTask(String id) {
+        for(Task task:tasks) {
+            if (id.equals(task.getId().toString())) {
+                tasks.remove(task);
+                return task;
+            }
+        }
+        throw new IndexOutOfBoundsException("Task not found.");
+    }
+
     private UUID getNextID(){
         return UUID.randomUUID(); //it's very simplified version of id generator
     }
