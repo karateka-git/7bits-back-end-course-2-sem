@@ -1,6 +1,7 @@
 package it.sevenbits.homework.web.controllers;
 
 
+import it.sevenbits.homework.web.model.RequestCreateTask;
 import it.sevenbits.homework.web.model.StatusRequest;
 import it.sevenbits.homework.core.model.Task;
 import it.sevenbits.homework.core.repository.TaskRepository;
@@ -33,8 +34,8 @@ public class TaskController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public ResponseEntity<Task> create(@Valid @RequestBody Task newTask) {
-        Task createdTask = taskRepository.create(newTask);
+    public ResponseEntity<Task> create(@Valid @RequestBody RequestCreateTask requestCreateTask) {
+        Task createdTask = taskRepository.create(requestCreateTask.getText());
         URI location = UriComponentsBuilder.fromPath("/tasks/")
                 .path(String.valueOf(createdTask.getId()))
                 .build().toUri();

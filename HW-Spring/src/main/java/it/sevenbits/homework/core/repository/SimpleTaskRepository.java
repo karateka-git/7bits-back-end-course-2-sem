@@ -11,6 +11,13 @@ public class SimpleTaskRepository implements TaskRepository {
     private CopyOnWriteArrayList<Task> tasks = new CopyOnWriteArrayList<>();
 
     @Override
+    public Task create(String text) {
+        Task newTask = new Task(getNextID(), text);
+        tasks.add(newTask);
+        return newTask;
+    }
+
+    @Override
     public List<Task> getAllItems() {
         return Collections.unmodifiableList(tasks);
     }
@@ -23,13 +30,6 @@ public class SimpleTaskRepository implements TaskRepository {
             }
         }
         throw new IndexOutOfBoundsException("Task not found.");
-    }
-
-    @Override
-    public Task create(Task task) {
-        Task newTask = new Task(getNextID(), task.getText());
-        tasks.add(newTask);
-        return newTask;
     }
 
     @Override

@@ -3,11 +3,11 @@ package it.sevenbits.homework.web.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class AddTaskRequest {
+public class RequestCreateTask {
     private final String text;
 
     @JsonCreator
-    public AddTaskRequest( @JsonProperty("text") String text) {
+    public RequestCreateTask(@JsonProperty("text") String text) {
         this.text = text;
     }
 

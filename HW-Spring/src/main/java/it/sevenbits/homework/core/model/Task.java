@@ -1,8 +1,5 @@
 package it.sevenbits.homework.core.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.UUID;
 
 public class Task {
@@ -12,8 +9,7 @@ public class Task {
 
     private String text;
 
-    @JsonCreator
-    public Task(@JsonProperty("id") UUID id, @JsonProperty("text") String text) {
+    public Task(UUID id, String text) {
         this.id = id;
         this.text = text;
         this.status = new Status();
