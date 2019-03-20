@@ -1,9 +1,9 @@
-package it.sevenbits.homework.web.controllers;
+package it.sevenbits.database.web.controllers;
 
 
-import it.sevenbits.homework.web.model.StatusRequest;
-import it.sevenbits.homework.core.model.Task;
-import it.sevenbits.homework.core.repository.TaskRepository;
+import it.sevenbits.database.core.model.Status;
+import it.sevenbits.database.core.model.Task;
+import it.sevenbits.database.core.repository.TaskRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -53,7 +53,7 @@ public class TaskController {
 
     @RequestMapping(value = "/{taskID}",method = RequestMethod.PATCH)
     @ResponseBody
-    public ResponseEntity updateStatus(@PathVariable("taskID") String uuid,@Valid @RequestBody StatusRequest newStatus) {
+    public ResponseEntity updateStatus(@PathVariable("taskID") String uuid,@Valid @RequestBody Status newStatus) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(newStatus);
         } catch (IndexOutOfBoundsException e) {

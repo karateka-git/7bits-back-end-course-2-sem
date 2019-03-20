@@ -3,21 +3,18 @@ package it.sevenbits.homework.core.repository.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class StatusValidator implements
-        ConstraintValidator<StatusConstraint, String> {
+public class EnumValidator implements
+        ConstraintValidator<EnumConstraint, String> {
 
-    private StatusConstraint annotation;
+    private EnumConstraint annotation;
     @Override
-    public void initialize(StatusConstraint constraintAnnotation) {
+    public void initialize(EnumConstraint constraintAnnotation) {
         this.annotation = constraintAnnotation;
     }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
         boolean result = false;
-        if(value == null) {
-            return false;
-        }
 
         Object[] enumValues = this.annotation.enumClass().getEnumConstants();
 

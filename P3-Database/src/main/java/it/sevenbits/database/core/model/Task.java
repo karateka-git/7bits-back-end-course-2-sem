@@ -1,16 +1,20 @@
-package it.sevenbits.homework.core.model;
+package it.sevenbits.database.core.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.UUID;
 
 public class Task {
+    @Null
     private final UUID id;
 
     private Status status;
 
-    private String text;
+    @NotNull
+    private final String text;
 
     @JsonCreator
     public Task(@JsonProperty("id") UUID id, @JsonProperty("text") String text) {
@@ -25,13 +29,7 @@ public class Task {
     public String getText() {
         return text;
     }
-    public void patchText(String text) {
-        this.text = text;
-    }
     public String getStatus() {
         return status.getStatus();
-    }
-    public void patchStatus(String status) {
-        this.status.setStatus(status);
     }
 }

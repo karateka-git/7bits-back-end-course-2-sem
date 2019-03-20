@@ -1,6 +1,6 @@
-package it.sevenbits.homework.core.repository;
+package it.sevenbits.database.core.repository;
 
-import it.sevenbits.homework.core.model.Task;
+import it.sevenbits.database.core.model.Task;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +44,6 @@ public class SimpleTaskRepository implements TaskRepository {
     }
 
     private UUID getNextID(){
-        return UUID.randomUUID();
+        return UUID.randomUUID(); //it's very simplified version of id generator
     }
 }
