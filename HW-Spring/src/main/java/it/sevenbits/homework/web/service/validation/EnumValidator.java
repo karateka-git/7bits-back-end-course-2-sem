@@ -1,4 +1,4 @@
-package it.sevenbits.homework.core.repository.validation;
+package it.sevenbits.homework.web.service.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -15,7 +15,9 @@ public class EnumValidator implements
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
         boolean result = false;
-
+        if(value == null) {
+            return true;
+        }
         Object[] enumValues = this.annotation.enumClass().getEnumConstants();
 
         if(enumValues != null)

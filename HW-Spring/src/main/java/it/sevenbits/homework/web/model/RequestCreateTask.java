@@ -3,7 +3,10 @@ package it.sevenbits.homework.web.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotNull;
+
 public class RequestCreateTask {
+    @NotNull
     private final String text;
 
     @JsonCreator

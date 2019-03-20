@@ -1,4 +1,4 @@
-package it.sevenbits.homework.core.repository.validation;
+package it.sevenbits.homework.web.service.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
