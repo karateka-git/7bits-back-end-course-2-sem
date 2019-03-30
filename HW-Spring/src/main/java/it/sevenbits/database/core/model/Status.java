@@ -3,9 +3,8 @@ package it.sevenbits.database.core.model;
 public class Status {
     private String status;
 
-    public Status(String status) {
-        //this.status = EnumValues.EnumStatus.inbox.toString();
-        this.status = EnumValues.EnumStatus.valueOf(status).toString();
+    public Status() {
+        this.status = EnumValues.EnumStatus.inbox.toString();
     }
 
     public String getStatus() {

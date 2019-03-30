@@ -20,8 +20,8 @@ import java.util.List;
 public class TaskController {
     private final TaskRepository taskRepository;
 
-    public TaskController(TaskRepository tasksRepository){
-        this.taskRepository = tasksRepository;
+    public TaskController(TaskRepository taskRepository){
+        this.taskRepository = taskRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET)

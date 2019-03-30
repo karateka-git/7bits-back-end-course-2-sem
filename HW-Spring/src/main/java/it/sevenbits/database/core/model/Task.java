@@ -3,19 +3,19 @@ package it.sevenbits.database.core.model;
 import java.util.UUID;
 
 public class Task {
-    private final long id;
+    private final UUID id;
 
     private Status status;
 
     private String text;
 
-    public Task(long id, String text, String status) {
+    public Task(UUID id, String text) {
         this.id = id;
         this.text = text;
-        this.status = new Status(status);
+        this.status = new Status();
     }
 
-    public long getId() {
+    public UUID getId() {
         return id;
     }
     public String getText() {
