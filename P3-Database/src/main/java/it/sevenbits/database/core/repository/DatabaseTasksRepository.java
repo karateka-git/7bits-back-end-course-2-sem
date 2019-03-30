@@ -52,12 +52,23 @@ public class DatabaseTasksRepository implements TaskRepository {
         long id = getNextId();
         String status = EnumValues.EnumStatus.inbox.toString();
         String date = getCurrentDate();
-        System.out.print("\n\n\n\n\n\n" + date + "\n\n\n\n\n\n");
         Task task = new Task(id, text, status, date);
-        int rows = jdbcOperations.update(
-                "INSERT INTO task (id, text, status, createdAT) VALUES (?, ?, ?, ?)",
-                id, text, status, Timestamp.valueOf(date)
-        );
+
+        PreparedStatementCreator preparedStatementCreator = connection -> {
+            String sql = "INSERT INTO task (id, text, status, createdAT) VALUES (?, ?, ?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, id);
+            preparedStatement.setString(2, text);
+            preparedStatement.setString(3, status);
+            preparedStatement.setTimestamp(4, Timestamp.valueOf(date));
+            return preparedStatement;
+        };
+
+        int rows = jdbcOperations.update(preparedStatementCreator);
+//        int rows = jdbcOperations.update(
+//                "INSERT INTO task (id, text, status, createdAT) VALUES (?, ?, ?, ?)",
+//                id, text, status, Timestamp.valueOf(date)
+//        );
 
         return task;  // or select from DB
     }
