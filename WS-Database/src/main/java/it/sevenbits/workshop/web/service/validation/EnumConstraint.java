@@ -1,4 +1,4 @@
-package it.sevenbits.database.web.service.validation;
+package it.sevenbits.workshop.web.service.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

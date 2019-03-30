@@ -1,7 +1,7 @@
-package it.sevenbits.database.config;
+package it.sevenbits.workshop.config;
 
-import it.sevenbits.database.core.repository.DatabaseTasksRepository;
-import it.sevenbits.database.core.repository.TaskRepository;
+import it.sevenbits.workshop.core.repository.DatabaseTasksRepository;
+import it.sevenbits.workshop.core.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

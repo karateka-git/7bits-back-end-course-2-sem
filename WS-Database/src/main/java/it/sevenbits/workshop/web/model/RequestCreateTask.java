@@ -1,4 +1,4 @@
-package it.sevenbits.database.web.model;
+package it.sevenbits.workshop.web.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

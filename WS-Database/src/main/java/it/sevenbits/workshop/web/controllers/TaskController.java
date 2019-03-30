@@ -1,10 +1,11 @@
-package it.sevenbits.database.web.controllers;
+package it.sevenbits.workshop.web.controllers;
 
 
-import it.sevenbits.database.web.model.RequestCreateTask;
-import it.sevenbits.database.web.model.RequestUpdateTaskValues;
-import it.sevenbits.database.core.model.Task;
-import it.sevenbits.database.core.repository.TaskRepository;
+import it.sevenbits.workshop.web.model.RequestCreateTask;
+import it.sevenbits.workshop.web.model.RequestUpdateTaskValues;
+import it.sevenbits.workshop.core.model.Task;
+import it.sevenbits.workshop.core.repository.TaskRepository;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -44,28 +45,30 @@ public class TaskController {
 
     @RequestMapping(value = "/{taskID}",method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity getTask(@PathVariable("taskID") String uuid) {
+    public ResponseEntity getTask(@PathVariable("taskID") long id) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(taskRepository.getTask(uuid));
-        } catch (IndexOutOfBoundsException e) {
+            Task task = taskRepository.getTask((id));
+            return ResponseEntity.status(HttpStatus.OK).body(task);
+        } catch (IncorrectResultSizeDataAccessException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @RequestMapping(value = "/{taskID}",method = RequestMethod.PATCH)
     @ResponseBody
-    public ResponseEntity updateStatus(@PathVariable("taskID") String uuid,
-                                       @Valid @RequestBody RequestUpdateTaskValues requestBody) {
+    public ResponseEntity updateTask(@PathVariable("taskID") long id,
+                                     @Valid @RequestBody RequestUpdateTaskValues requestBody) {
         try {
-            Task task = taskRepository.getTask(uuid);
+            Task task = taskRepository.getTask((id));
             if (!requestBody.getText().equals("null")) {
                 task.setText(requestBody.getText());
             }
             if (!requestBody.getStatus().equals("null")) {
                 task.setStatus(requestBody.getStatus());
             }
+            taskRepository.updateTask(task);
             return ResponseEntity.status(HttpStatus.OK).body(task);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IncorrectResultSizeDataAccessException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
 
@@ -73,10 +76,11 @@ public class TaskController {
 
     @RequestMapping(value = "/{taskID}",method = RequestMethod.DELETE)
     @ResponseBody
-    public ResponseEntity deleteTask(@PathVariable("taskID") String uuid) {
+    public ResponseEntity deleteTask(@PathVariable("taskID") long id) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(taskRepository.deleteTask(uuid));
-        } catch (IndexOutOfBoundsException e) {
+            Task task = taskRepository.deleteTask(id);
+            return ResponseEntity.status(HttpStatus.OK).body(task);
+        } catch (IncorrectResultSizeDataAccessException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

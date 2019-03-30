@@ -1,4 +1,4 @@
-package it.sevenbits.database.core.model;
+package it.sevenbits.workshop.core.model;
 
 public class Status {
     private String status;

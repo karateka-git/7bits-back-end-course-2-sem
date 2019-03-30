@@ -1,13 +1,13 @@
-package it.sevenbits.database.core.repository;
+package it.sevenbits.workshop.core.repository;
 
-import it.sevenbits.database.core.model.EnumValues;
-import it.sevenbits.database.core.model.Task;
+import it.sevenbits.workshop.core.model.EnumValues;
+import it.sevenbits.workshop.core.model.Task;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -43,8 +43,17 @@ public class DatabaseTasksRepository implements TaskRepository {
     }
 
     @Override
-    public Task getTask(String id) {
-        return null;
+    public Task getTask(long id) {
+        return jdbcOperations.queryForObject(
+                "SELECT id, text, status, createdAT FROM task WHERE id = ?",
+                (resultSet, i) -> {
+                    long rowId = resultSet.getLong(1);
+                    String rowText = resultSet.getString(2);
+                    String rowStatus = resultSet.getString(3);
+                    String rowDate = resultSet.getString(4);
+                    return new Task(rowId, rowText, rowStatus, rowDate);
+                },
+                id);
     }
 
     @Override
@@ -63,18 +72,37 @@ public class DatabaseTasksRepository implements TaskRepository {
             preparedStatement.setTimestamp(4, Timestamp.valueOf(date));
             return preparedStatement;
         };
-
         int rows = jdbcOperations.update(preparedStatementCreator);
-//        int rows = jdbcOperations.update(
-//                "INSERT INTO task (id, text, status, createdAT) VALUES (?, ?, ?, ?)",
-//                id, text, status, Timestamp.valueOf(date)
-//        );
-
-        return task;  // or select from DB
+        return task;
     }
 
     @Override
-    public Task deleteTask(String id) {
-        return null;
+    public Task deleteTask(long id) {
+        Task task = getTask(id);
+        PreparedStatementCallback preparedStatementCallback = preparedStatement -> {
+            preparedStatement.setLong(1, id);
+            return preparedStatement.execute();
+        };
+        jdbcOperations.execute(
+                "DELETE FROM task WHERE id = ?",
+                preparedStatementCallback
+        );
+        return task;
+    }
+
+    @Override
+    public Task updateTask(Task task) {
+
+        PreparedStatementCreator preparedStatementCreator = connection -> {
+            String sql = "UPDATE task SET text = ?, status = ?, createdAT = ? WHERE id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, task.getText());
+            preparedStatement.setString(2, task.getStatus());
+            preparedStatement.setTimestamp(3, Timestamp.valueOf(getCurrentDate()));
+            preparedStatement.setLong(4, task.getId());
+            return preparedStatement;
+        };
+        int rows = jdbcOperations.update(preparedStatementCreator);
+        return task;
     }
 }

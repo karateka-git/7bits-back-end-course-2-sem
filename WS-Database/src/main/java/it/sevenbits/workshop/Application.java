@@ -1,4 +1,4 @@
-package it.sevenbits.database;
+package it.sevenbits.workshop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

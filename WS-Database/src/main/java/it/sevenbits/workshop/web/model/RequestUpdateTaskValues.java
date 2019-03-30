@@ -1,9 +1,9 @@
-package it.sevenbits.database.web.model;
+package it.sevenbits.workshop.web.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import it.sevenbits.database.core.model.EnumValues;
-import it.sevenbits.database.web.service.validation.EnumConstraint;
+import it.sevenbits.workshop.core.model.EnumValues;
+import it.sevenbits.workshop.web.service.validation.EnumConstraint;
 
 public class RequestUpdateTaskValues {
 
