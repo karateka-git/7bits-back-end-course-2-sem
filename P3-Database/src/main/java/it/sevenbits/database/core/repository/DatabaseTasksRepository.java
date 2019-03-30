@@ -3,11 +3,10 @@ package it.sevenbits.database.core.repository;
 import it.sevenbits.database.core.model.EnumValues;
 import it.sevenbits.database.core.model.Task;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -59,6 +58,7 @@ public class DatabaseTasksRepository implements TaskRepository {
                 "INSERT INTO task (id, text, status, createdAT) VALUES (?, ?, ?, ?)",
                 id, text, status, Timestamp.valueOf(date)
         );
+
         return task;  // or select from DB
     }
 
