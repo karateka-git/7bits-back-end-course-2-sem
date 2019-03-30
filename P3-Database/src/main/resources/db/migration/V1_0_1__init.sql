@@ -1,3 +1,4 @@
+delete from task;
 ALTER table task add column createdAT timestamp;
 
 INSERT INTO task (text, status, createdAt) VALUES

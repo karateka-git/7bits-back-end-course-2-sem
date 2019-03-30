@@ -59,10 +59,10 @@ public class TaskController {
         try {
             Task task = taskRepository.getTask(uuid);
             if (!requestBody.getText().equals("null")) {
-                task.patchText(requestBody.getText());
+                task.setText(requestBody.getText());
             }
             if (!requestBody.getStatus().equals("null")) {
-                task.patchStatus(requestBody.getStatus());
+                task.setStatus(requestBody.getStatus());
             }
             return ResponseEntity.status(HttpStatus.OK).body(task);
         } catch (IndexOutOfBoundsException e) {

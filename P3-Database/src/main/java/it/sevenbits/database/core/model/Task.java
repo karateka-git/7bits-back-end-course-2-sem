@@ -9,10 +9,13 @@ public class Task {
 
     private String text;
 
-    public Task(long id, String text, String status) {
+    private String createdAt;
+
+    public Task(long id, String text, String status, String createdAt) {
         this.id = id;
         this.text = text;
         this.status = new Status(status);
+        this.createdAt = createdAt;
     }
 
     public long getId() {
@@ -21,13 +24,19 @@ public class Task {
     public String getText() {
         return text;
     }
-    public void patchText(String text) {
+    public void setText(String text) {
         this.text = text;
     }
     public String getStatus() {
         return status.getStatus();
     }
-    public void patchStatus(String status) {
+    public void setStatus(String status) {
         this.status.setStatus(status);
+    }
+    public String getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }
