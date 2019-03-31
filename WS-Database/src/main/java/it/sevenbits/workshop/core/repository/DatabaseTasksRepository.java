@@ -92,13 +92,13 @@ public class DatabaseTasksRepository implements TaskRepository {
 
     @Override
     public Task updateTask(Task task) {
-
+        task.setCreatedAt(getCurrentDate());
         PreparedStatementCreator preparedStatementCreator = connection -> {
             String sql = "UPDATE task SET text = ?, status = ?, createdAT = ? WHERE id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, task.getText());
             preparedStatement.setString(2, task.getStatus());
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(getCurrentDate()));
+            preparedStatement.setTimestamp(3, Timestamp.valueOf(task.getCreatedAt()));
             preparedStatement.setLong(4, task.getId());
             return preparedStatement;
         };

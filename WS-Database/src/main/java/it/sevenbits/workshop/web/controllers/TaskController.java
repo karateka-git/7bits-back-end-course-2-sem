@@ -66,7 +66,7 @@ public class TaskController {
             if (!requestBody.getStatus().equals("null")) {
                 task.setStatus(requestBody.getStatus());
             }
-            taskRepository.updateTask(task);
+            task = taskRepository.updateTask(task);
             return ResponseEntity.status(HttpStatus.OK).body(task);
         } catch (IncorrectResultSizeDataAccessException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
