@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface TaskRepository {
     List<Task> getAllItems();
-    Task getTask(long id);
+    Task getTask(long id) throws IndexOutOfBoundsException;
     Task create(String text);
-    Task deleteTask(long id);
-    Task updateTask(Task task);
+    Task deleteTask(long id) throws IndexOutOfBoundsException;
+    Task updateTask(Task task) throws IndexOutOfBoundsException;
 }

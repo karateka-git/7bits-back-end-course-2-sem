@@ -3,6 +3,7 @@ package it.sevenbits.workshop.core.repository;
 import it.sevenbits.workshop.core.model.EnumValues;
 import it.sevenbits.workshop.core.model.Task;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -43,17 +44,23 @@ public class DatabaseTasksRepository implements TaskRepository {
     }
 
     @Override
-    public Task getTask(long id) {
-        return jdbcOperations.queryForObject(
-                "SELECT id, text, status, createdAT FROM task WHERE id = ?",
-                (resultSet, i) -> {
-                    long rowId = resultSet.getLong(1);
-                    String rowText = resultSet.getString(2);
-                    String rowStatus = resultSet.getString(3);
-                    String rowDate = resultSet.getString(4);
-                    return new Task(rowId, rowText, rowStatus, rowDate);
-                },
-                id);
+    public Task getTask(long id) throws IndexOutOfBoundsException {
+        try {
+            return jdbcOperations.queryForObject(
+                    "SELECT id, text, status, createdAT FROM task WHERE id = ?",
+                    (resultSet, i) -> {
+                        long rowId = resultSet.getLong(1);
+                        String rowText = resultSet.getString(2);
+                        String rowStatus = resultSet.getString(3);
+                        String rowDate = resultSet.getString(4);
+                        return new Task(rowId, rowText, rowStatus, rowDate);
+                    },
+                    id);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            throw new IndexOutOfBoundsException("Task not found");
+        }
+
+
     }
 
     @Override
@@ -77,21 +84,26 @@ public class DatabaseTasksRepository implements TaskRepository {
     }
 
     @Override
-    public Task deleteTask(long id) {
-        Task task = getTask(id);
+    public Task deleteTask(long id) throws IndexOutOfBoundsException {
+
         PreparedStatementCallback preparedStatementCallback = preparedStatement -> {
             preparedStatement.setLong(1, id);
             return preparedStatement.execute();
         };
-        jdbcOperations.execute(
-                "DELETE FROM task WHERE id = ?",
-                preparedStatementCallback
-        );
-        return task;
+        try {
+            Task task = getTask(id);
+            jdbcOperations.execute(
+                    "DELETE FROM task WHERE id = ?",
+                    preparedStatementCallback
+            );
+            return task;
+        } catch (IncorrectResultSizeDataAccessException e) {
+            throw new IndexOutOfBoundsException("Task not found");
+        }
     }
 
     @Override
-    public Task updateTask(Task task) {
+    public Task updateTask(Task task) throws IndexOutOfBoundsException {
         task.setCreatedAt(getCurrentDate());
         PreparedStatementCreator preparedStatementCreator = connection -> {
             String sql = "UPDATE task SET text = ?, status = ?, createdAT = ? WHERE id = ?";
@@ -102,7 +114,11 @@ public class DatabaseTasksRepository implements TaskRepository {
             preparedStatement.setLong(4, task.getId());
             return preparedStatement;
         };
-        int rows = jdbcOperations.update(preparedStatementCreator);
-        return task;
+        try {
+            int rows = jdbcOperations.update(preparedStatementCreator);
+            return task;
+        } catch(IncorrectResultSizeDataAccessException e) {
+            throw new IndexOutOfBoundsException("Task not found");
+        }
     }
 }
