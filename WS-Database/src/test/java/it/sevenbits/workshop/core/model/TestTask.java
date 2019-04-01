@@ -2,7 +2,6 @@ package it.sevenbits.workshop.core.model;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 
 public class TestTask {
@@ -18,6 +17,6 @@ public class TestTask {
         Assert.assertEquals(id, task.getId());
         Assert.assertEquals(text, task.getText());
         Assert.assertEquals(status, task.getStatus());
-        Assert.assertEquals(createdAT, task.getCreatedAt());
+        Assert.assertEquals(createdAT, task.getCreatedAT());
     }
 }

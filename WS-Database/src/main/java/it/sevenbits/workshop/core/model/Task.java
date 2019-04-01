@@ -7,13 +7,24 @@ public class Task {
 
     private String text;
 
-    private String createdAt;
+    private String createdAT;
 
-    public Task(long id, String text, String status, String createdAt) {
+    private String updateAT;
+
+    public Task(long id, String text, String status, String createdAT) {
         this.id = id;
         this.text = text;
         this.status = new Status(status);
-        this.createdAt = createdAt;
+        this.createdAT = createdAT;
+        this.updateAT = createdAT;
+    }
+
+    public Task(long id, String text, String status, String createdAT, String updateAT) {
+        this.id = id;
+        this.text = text;
+        this.status = new Status(status);
+        this.createdAT = createdAT;
+        this.updateAT = updateAT;
     }
 
     public long getId() {
@@ -31,10 +42,16 @@ public class Task {
     public void setStatus(String status) {
         this.status.setStatus(status);
     }
-    public String getCreatedAt() {
-        return createdAt;
+    public String getCreatedAT() {
+        return createdAT;
     }
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAT(String createdAT) {
+        this.createdAT = createdAT;
+    }
+    public String getUpdateAT() {
+        return updateAT;
+    }
+    public void setUpdateAT(String updateAT) {
+        this.updateAT = updateAT;
     }
 }
