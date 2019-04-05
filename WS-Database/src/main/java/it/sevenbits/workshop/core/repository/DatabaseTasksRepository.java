@@ -2,10 +2,9 @@ package it.sevenbits.workshop.core.repository;
 
 import it.sevenbits.workshop.core.model.EnumValues;
 import it.sevenbits.workshop.core.model.Task;
-import org.springframework.dao.DataAccessException;
+import it.sevenbits.workshop.web.service.ServiceCurrentDate;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 
 import java.sql.*;
@@ -18,20 +17,14 @@ public class DatabaseTasksRepository implements TaskRepository {
         this.jdbcOperations = jdbcOperations;
     }
 
-    private long getNextId() {
+    @Override
+    public long getNextId() {
         return jdbcOperations.queryForObject(
                 "select nextval('task_id_seq')", Long.class);
     }
 
-
-    private String getCurrentDate() {
-        Date utilDate = new Date();
-        Timestamp sq = new Timestamp(utilDate.getTime());
-        return sq.toString();
-    }
-
     @Override
-    public List<Task> getAllItems() {
+    public List<Task> getAllTasks() {
         return jdbcOperations.query(
                 "SELECT id, text, status, createdAT, updateAT FROM task",
                 (resultSet, i) -> {
@@ -56,21 +49,19 @@ public class DatabaseTasksRepository implements TaskRepository {
                         String rowDateCreate = resultSet.getString(4);
                         String rowDateUpdate = resultSet.getString(5);
                         return new Task(rowId, rowText, rowStatus, rowDateCreate, rowDateUpdate);
-                    },
-                    id);
+                    },id);
         } catch (IncorrectResultSizeDataAccessException e) {
             throw new IndexOutOfBoundsException("Task not found");
         }
-
-
     }
 
     @Override
-    public Task create(String text) {
-        long id = getNextId();
-        String status = EnumValues.EnumStatus.inbox.toString();
-        String date = getCurrentDate();
-        Task task = new Task(id, text, status, date);
+    public Task createTask(Task task) {
+        long id = task.getId();
+        String text = task.getText();
+        String status = task.getStatus();
+        String dateCreate = task.getCreatedAT();
+        String dateUpdate = task.getUpdateAT();
 
         PreparedStatementCreator preparedStatementCreator = connection -> {
             String sql = "INSERT INTO task (id, text, status, createdAT, updateAT) VALUES (?, ?, ?, ?, ?)";
@@ -78,8 +69,8 @@ public class DatabaseTasksRepository implements TaskRepository {
             preparedStatement.setLong(1, id);
             preparedStatement.setString(2, text);
             preparedStatement.setString(3, status);
-            preparedStatement.setTimestamp(4, Timestamp.valueOf(date));
-            preparedStatement.setTimestamp(5, Timestamp.valueOf(date));
+            preparedStatement.setTimestamp(4, Timestamp.valueOf(dateCreate));
+            preparedStatement.setTimestamp(5, Timestamp.valueOf(dateUpdate));
             return preparedStatement;
         };
         int rows = jdbcOperations.update(preparedStatementCreator);
@@ -87,40 +78,37 @@ public class DatabaseTasksRepository implements TaskRepository {
     }
 
     @Override
-    public Task deleteTask(long id) throws IndexOutOfBoundsException {
-
-        PreparedStatementCallback preparedStatementCallback = preparedStatement -> {
-            preparedStatement.setLong(1, id);
-            return preparedStatement.execute();
-        };
+    public int deleteTask(long id) throws IndexOutOfBoundsException {
         try {
-            Task task = getTask(id);
-            jdbcOperations.execute(
-                    "DELETE FROM task WHERE id = ?",
-                    preparedStatementCallback
-            );
-            return task;
+            PreparedStatementCreator preparedStatementCreator = connection -> {
+                String sql = "DELETE FROM task WHERE id = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setLong(1, id);
+                return preparedStatement;
+            };
+            return jdbcOperations.update(preparedStatementCreator);
         } catch (IncorrectResultSizeDataAccessException e) {
             throw new IndexOutOfBoundsException("Task not found");
         }
     }
 
+    //DO IT USE MAP
     @Override
     public Task updateTask(Task task) throws IndexOutOfBoundsException {
-        task.setUpdateAT(getCurrentDate());
-        PreparedStatementCreator preparedStatementCreator = connection -> {
-            String sql = "UPDATE task SET text = ?, status = ?, updateAT = ? WHERE id = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, task.getText());
-            preparedStatement.setString(2, task.getStatus());
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(task.getUpdateAT()));
-            preparedStatement.setLong(4, task.getId());
-            return preparedStatement;
-        };
         try {
+            task.setUpdateAT(ServiceCurrentDate.getCurrentDate());
+            PreparedStatementCreator preparedStatementCreator = connection -> {
+                String sql = "UPDATE task SET text = ?, status = ?, updateAT = ? WHERE id = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, task.getText());
+                preparedStatement.setString(2, task.getStatus());
+                preparedStatement.setTimestamp(3, Timestamp.valueOf(task.getUpdateAT()));
+                preparedStatement.setLong(4, task.getId());
+                return preparedStatement;
+            };
             int rows = jdbcOperations.update(preparedStatementCreator);
             return task;
-        } catch(IncorrectResultSizeDataAccessException e) {
+        } catch (IncorrectResultSizeDataAccessException e) {
             throw new IndexOutOfBoundsException("Task not found");
         }
     }

@@ -4,8 +4,7 @@ package it.sevenbits.workshop.web.controllers;
 import it.sevenbits.workshop.web.model.RequestCreateTask;
 import it.sevenbits.workshop.web.model.RequestUpdateTaskValues;
 import it.sevenbits.workshop.core.model.Task;
-import it.sevenbits.workshop.core.repository.TaskRepository;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import it.sevenbits.workshop.web.service.ServiceRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,16 +18,16 @@ import java.util.List;
 @Controller
 @RequestMapping("/tasks")
 public class TaskController {
-    private final TaskRepository taskRepository;
+    private final ServiceRepository serviceRepository;
 
-    public TaskController(TaskRepository tasksRepository){
-        this.taskRepository = tasksRepository;
+    public TaskController(ServiceRepository serviceRepository){
+        this.serviceRepository = serviceRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<List<Task>> getAllItems() {
-        List<Task> answer = taskRepository.getAllItems();
+    public ResponseEntity<List<Task>> getAllTasks() {
+        List<Task> answer = serviceRepository.getAllTasks();
         return ResponseEntity.status(HttpStatus.OK).body(answer);
     }
 
@@ -36,7 +35,7 @@ public class TaskController {
     @ResponseBody
     public ResponseEntity getTask(@PathVariable("taskID") long id) {
         try {
-            Task task = taskRepository.getTask((id));
+            Task task = serviceRepository.getTask((id));
             return ResponseEntity.status(HttpStatus.OK).body(task);
         } catch (IndexOutOfBoundsException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -47,7 +46,8 @@ public class TaskController {
 
     @ResponseBody
     public ResponseEntity<Task> create(@Valid @RequestBody RequestCreateTask requestBody) {
-        Task createdTask = taskRepository.create(requestBody.getText());
+
+        Task createdTask = serviceRepository.createTask(requestBody.getText());
         URI location = UriComponentsBuilder.fromPath("/tasks/")
                 .path(String.valueOf(createdTask.getId()))
                 .build().toUri();
@@ -60,14 +60,14 @@ public class TaskController {
     public ResponseEntity updateTask(@PathVariable("taskID") long id,
                                      @Valid @RequestBody RequestUpdateTaskValues requestBody) {
         try {
-            Task task = taskRepository.getTask((id));
+            Task task = serviceRepository.getTask((id));
             if (!requestBody.getText().equals("null")) {
                 task.setText(requestBody.getText());
             }
             if (!requestBody.getStatus().equals("null")) {
                 task.setStatus(requestBody.getStatus());
             }
-            task = taskRepository.updateTask(task);
+            task = serviceRepository.updateTask(task);
             return ResponseEntity.status(HttpStatus.OK).body(task);
         } catch (IndexOutOfBoundsException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -79,8 +79,8 @@ public class TaskController {
     @ResponseBody
     public ResponseEntity deleteTask(@PathVariable("taskID") long id) {
         try {
-            Task task = taskRepository.deleteTask(id);
-            return ResponseEntity.status(HttpStatus.OK).body(task);
+            int answer = serviceRepository.deleteTask(id);
+            return ResponseEntity.status(HttpStatus.OK).body(answer);
         } catch (IndexOutOfBoundsException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

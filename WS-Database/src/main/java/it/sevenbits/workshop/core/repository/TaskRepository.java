@@ -5,9 +5,10 @@ import it.sevenbits.workshop.core.model.Task;
 import java.util.List;
 
 public interface TaskRepository {
-    List<Task> getAllItems();
+    long getNextId();
+    List<Task> getAllTasks();
     Task getTask(long id) throws IndexOutOfBoundsException;
-    Task create(String text);
-    Task deleteTask(long id) throws IndexOutOfBoundsException;
+    Task createTask(Task task);
+    int deleteTask(long id) throws IndexOutOfBoundsException;
     Task updateTask(Task task) throws IndexOutOfBoundsException;
 }
