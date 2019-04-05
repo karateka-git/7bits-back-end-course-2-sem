@@ -71,35 +71,53 @@ public class TestDatabaseTasksRepository {
         databaseTasksRepository.getTask(taskId);
     }
 
-//    @Test
-//    public void testCreate() {
-//        long taskId = 1;
-//        Task mockTask = mock(Task.class);
-//
-//        when(mockJdbcOperations.queryForObject(anyString(), any(RowMapper.class), anyLong())).thenReturn(mockTask);
-//        Task expectedTask = databaseTasksRepository.getTask(taskId);
-//
-//        verify(mockJdbcOperations, times(1)).queryForObject(
-//                eq("SELECT id, text, status, createdAT, updateAT FROM task WHERE id = ?"),
-//                any(RowMapper.class),
-//                eq(taskId)
-//        );
-//
-//        Assert.assertEquals(mockTask, expectedTask);
-//    }
+    @Test
+    public void testCreate() {
+        long taskId = 1;
+        int expectedCreateTasks = 1;
+        Task mockTask = mock(Task.class);
+
+        when(mockJdbcOperations.update(any(PreparedStatementCreator.class))).thenReturn(expectedCreateTasks);
+        Task expectedTask = databaseTasksRepository.createTask(mockTask);
+
+        verify(mockJdbcOperations, times(1)).update(
+                eq("INSERT INTO task (id, text, status, createdAT, updateAT) VALUES (?, ?, ?, ?, ?)"),
+                any(RowMapper.class),
+                eq(taskId)
+        );
+
+        Assert.assertEquals(mockTask, expectedTask);
+    }
 
     @Test
-    public void testDeleteTask() {
+    public void testDeleteTask() throws SQLException {
         int expectedDeletedTasks = 1;
         long taskId = 1;
+//        Connection conn = mock(Connection.class);
+//        PreparedStatement preparedStatement = mock(PreparedStatement.class);
+//        when(conn.prepareStatement(any(String.class))).thenReturn(preparedStatement);
         when(mockJdbcOperations.update(any(PreparedStatementCreator.class))).thenReturn(1);
 
         int receivedDeletedTasks = databaseTasksRepository.deleteTask(taskId);
+
         verify(mockJdbcOperations, times(1)).update(
                 any(PreparedStatementCreator.class)
         );
         Assert.assertEquals(expectedDeletedTasks, receivedDeletedTasks);
+
+//        verify(conn, times(1)).prepareStatement(
+//            eq("DELETE FROM task WHERE id = ?")
+//        );
+
+
     }
 
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testDeleteTaskException() {
+        long taskId = 1;
+        when(mockJdbcOperations.update(any(PreparedStatementCreator.class)))
+                .thenThrow(IncorrectResultSizeDataAccessException.class);
+        int receivedDeletedTasks = databaseTasksRepository.deleteTask(taskId);
+    }
 
 }

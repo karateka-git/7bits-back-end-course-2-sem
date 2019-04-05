@@ -1,6 +1,5 @@
 package it.sevenbits.workshop.core.repository;
 
-import it.sevenbits.workshop.core.model.EnumValues;
 import it.sevenbits.workshop.core.model.Task;
 import it.sevenbits.workshop.web.service.ServiceCurrentDate;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -8,7 +7,6 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 
 import java.sql.*;
-import java.util.Date;
 import java.util.List;
 
 public class DatabaseTasksRepository implements TaskRepository {
