@@ -33,7 +33,7 @@ public class TaskController {
 
     @RequestMapping(value = "/{taskID}",method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity getTask(@PathVariable("taskID") long id) {
+    public ResponseEntity getTask(@PathVariable("taskID") String id) {
         try {
             Task task = serviceRepository.getTask((id));
             return ResponseEntity.status(HttpStatus.OK).body(task);
@@ -57,17 +57,10 @@ public class TaskController {
 
     @RequestMapping(value = "/{taskID}",method = RequestMethod.PATCH)
     @ResponseBody
-    public ResponseEntity updateTask(@PathVariable("taskID") long id,
+    public ResponseEntity updateTask(@PathVariable("taskID") String id,
                                      @Valid @RequestBody RequestUpdateTaskValues requestBody) {
         try {
-            Task task = serviceRepository.getTask((id));
-            if (!requestBody.getText().equals("null")) {
-                task.setText(requestBody.getText());
-            }
-            if (!requestBody.getStatus().equals("null")) {
-                task.setStatus(requestBody.getStatus());
-            }
-            task = serviceRepository.updateTask(task);
+            Task task = serviceRepository.updateTask(id, requestBody);
             return ResponseEntity.status(HttpStatus.OK).body(task);
         } catch (IndexOutOfBoundsException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -77,7 +70,7 @@ public class TaskController {
 
     @RequestMapping(value = "/{taskID}",method = RequestMethod.DELETE)
     @ResponseBody
-    public ResponseEntity deleteTask(@PathVariable("taskID") long id) {
+    public ResponseEntity deleteTask(@PathVariable("taskID") String id) {
         try {
             int answer = serviceRepository.deleteTask(id);
             return ResponseEntity.status(HttpStatus.OK).body(answer);

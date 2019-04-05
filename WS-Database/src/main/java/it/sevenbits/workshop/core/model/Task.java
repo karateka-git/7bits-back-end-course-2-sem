@@ -1,7 +1,7 @@
 package it.sevenbits.workshop.core.model;
 
 public class Task {
-    private final long id;
+    private final String id;
 
     private Status status;
 
@@ -11,7 +11,7 @@ public class Task {
 
     private String updateAT;
 
-    public Task(long id, String text, String status, String createdAT) {
+    public Task(String id, String text, String status, String createdAT) {
         this.id = id;
         this.text = text;
         this.status = new Status(status);
@@ -19,7 +19,7 @@ public class Task {
         this.updateAT = createdAT;
     }
 
-    public Task(long id, String text, String status, String createdAT, String updateAT) {
+    public Task(String id, String text, String status, String createdAT, String updateAT) {
         this.id = id;
         this.text = text;
         this.status = new Status(status);
@@ -27,7 +27,7 @@ public class Task {
         this.updateAT = updateAT;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
     public String getText() {

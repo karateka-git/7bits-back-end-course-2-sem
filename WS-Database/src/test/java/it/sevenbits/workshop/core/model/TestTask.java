@@ -7,7 +7,7 @@ import org.junit.Test;
 public class TestTask {
     @Test
     public void testInit() {
-        long id = 1;
+        String id = "deea44c7-a180-4898-9527-58db0ed34683";
         String text = "test text";
         String status = "inbox";
         String createdAT = "12-12-12 12:12:12";

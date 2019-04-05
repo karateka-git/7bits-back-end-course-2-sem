@@ -40,9 +40,9 @@ public class TestTaskController {
 
     @Test
     public void testGetTask() {
-        long taskId = 1;
+        String taskId = "deea44c7-a180-4898-9527-58db0ed34683";
         Task mockTask = mock(Task.class);
-        when(mockServiceRepository.getTask(anyLong())).thenReturn(mockTask);
+        when(mockServiceRepository.getTask(anyString())).thenReturn(mockTask);
 
         ResponseEntity answer = taskController.getTask(taskId);
         verify(mockServiceRepository, times(1)).getTask(taskId);
@@ -52,9 +52,9 @@ public class TestTaskController {
 
     @Test
     public void testGetTaskException() {
-        long taskId = 1;
+        String taskId = "deea44c7-a180-4898-9527-58db0ed34683";
         String stringException = "Task not found";
-        when(mockServiceRepository.getTask(anyLong())).thenThrow(new IndexOutOfBoundsException(stringException));
+        when(mockServiceRepository.getTask(anyString())).thenThrow(new IndexOutOfBoundsException(stringException));
         ResponseEntity answer = taskController.getTask(taskId);
         Assert.assertEquals(HttpStatus.NOT_FOUND, answer.getStatusCode());
         Assert.assertEquals(stringException, answer.getBody());
@@ -62,9 +62,9 @@ public class TestTaskController {
 
     @Test
     public void testCreateTask() throws URISyntaxException {
-        long mockId = 1;
+        String mockId = "deea44c7-a180-4898-9527-58db0ed34683";
         String mockText="mockText";
-        URI location = new URI(String.format("/tasks/%d", mockId));
+        URI location = new URI(String.format("/tasks/%s", mockId));
         RequestCreateTask requestBody = mock(RequestCreateTask.class);
         when(requestBody.getText()).thenReturn(mockText);
 
@@ -80,7 +80,7 @@ public class TestTaskController {
 
     @Test
     public void testUpdateTask() {
-        long mockId = 1;
+        String mockId = "deea44c7-a180-4898-9527-58db0ed34683";
         String mockText="initText";
         String mockStatus="inbox";
         RequestUpdateTaskValues requestBody = mock(RequestUpdateTaskValues.class);
@@ -90,7 +90,7 @@ public class TestTaskController {
         Task mockTask = mock(Task.class);
 
         when(mockServiceRepository.getTask(mockId)).thenReturn(mockTask);
-        when(mockServiceRepository.updateTask(mockTask)).thenReturn(mockTask);
+        when(mockServiceRepository.updateTask(mockId, requestBody)).thenReturn(mockTask);
         ResponseEntity answer = taskController.updateTask(mockId, requestBody);
 
         Assert.assertEquals(HttpStatus.OK, answer.getStatusCode());
@@ -101,8 +101,8 @@ public class TestTaskController {
     public void testUpdateTaskException() {
         String stringException = "Task not found";
         RequestUpdateTaskValues requestBody = mock(RequestUpdateTaskValues.class);
-        when(mockServiceRepository.getTask(anyLong())).thenThrow(new IndexOutOfBoundsException(stringException));
-        ResponseEntity answer = taskController.updateTask(anyLong(), requestBody);
+        when(mockServiceRepository.getTask(anyString())).thenThrow(new IndexOutOfBoundsException(stringException));
+        ResponseEntity answer = taskController.updateTask(anyString(), requestBody);
         Assert.assertEquals(HttpStatus.NOT_FOUND, answer.getStatusCode());
         Assert.assertEquals(stringException, answer.getBody());
     }
@@ -111,8 +111,8 @@ public class TestTaskController {
     public void testDeleteTask() {
         int expectedDeletedTasks = 1;
 
-        when(mockServiceRepository.deleteTask(anyLong())).thenReturn(1);
-        ResponseEntity answer = taskController.deleteTask(anyLong());
+        when(mockServiceRepository.deleteTask(anyString())).thenReturn(1);
+        ResponseEntity answer = taskController.deleteTask(anyString());
 
         Assert.assertEquals(HttpStatus.OK, answer.getStatusCode());
         Assert.assertSame(expectedDeletedTasks, answer.getBody());
@@ -121,9 +121,9 @@ public class TestTaskController {
     @Test
     public void testDeleteTaskException() {
         String stringException = "Task not found";
-        when(mockServiceRepository.deleteTask(anyLong())).thenThrow(new IndexOutOfBoundsException(stringException));
-        when(mockServiceRepository.getTask(anyLong())).thenThrow(new IndexOutOfBoundsException(stringException));
-        ResponseEntity answer = taskController.deleteTask(anyLong());
+        when(mockServiceRepository.deleteTask(anyString())).thenThrow(new IndexOutOfBoundsException(stringException));
+        when(mockServiceRepository.getTask(anyString())).thenThrow(new IndexOutOfBoundsException(stringException));
+        ResponseEntity answer = taskController.deleteTask(anyString());
         Assert.assertEquals(HttpStatus.NOT_FOUND, answer.getStatusCode());
         Assert.assertEquals(stringException, answer.getBody());
     }

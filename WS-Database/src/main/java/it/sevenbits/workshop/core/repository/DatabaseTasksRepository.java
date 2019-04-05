@@ -16,17 +16,11 @@ public class DatabaseTasksRepository implements TaskRepository {
     }
 
     @Override
-    public long getNextId() {
-        return jdbcOperations.queryForObject(
-                "select nextval('task_id_seq')", Long.class);
-    }
-
-    @Override
     public List<Task> getAllTasks() {
         return jdbcOperations.query(
                 "SELECT id, text, status, createdAT, updateAT FROM task",
                 (resultSet, i) -> {
-                    long id = resultSet.getLong(1);
+                    String id = resultSet.getString(1);
                     String text = resultSet.getString(2);
                     String status = resultSet.getString(3);
                     String DateCreate = resultSet.getString(4);
@@ -36,12 +30,12 @@ public class DatabaseTasksRepository implements TaskRepository {
     }
 
     @Override
-    public Task getTask(long id) throws IndexOutOfBoundsException {
+    public Task getTask(String id) throws IndexOutOfBoundsException {
         try {
             return jdbcOperations.queryForObject(
                     "SELECT id, text, status, createdAT, updateAT FROM task WHERE id = ?",
                     (resultSet, i) -> {
-                        long rowId = resultSet.getLong(1);
+                        String rowId = resultSet.getString(1);
                         String rowText = resultSet.getString(2);
                         String rowStatus = resultSet.getString(3);
                         String rowDateCreate = resultSet.getString(4);
@@ -55,7 +49,7 @@ public class DatabaseTasksRepository implements TaskRepository {
 
     @Override
     public Task createTask(Task task) {
-        long id = task.getId();
+        String id = task.getId();
         String text = task.getText();
         String status = task.getStatus();
         String dateCreate = task.getCreatedAT();
@@ -64,7 +58,7 @@ public class DatabaseTasksRepository implements TaskRepository {
         PreparedStatementCreator preparedStatementCreator = connection -> {
             String sql = "INSERT INTO task (id, text, status, createdAT, updateAT) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setLong(1, id);
+            preparedStatement.setString(1, id);
             preparedStatement.setString(2, text);
             preparedStatement.setString(3, status);
             preparedStatement.setTimestamp(4, Timestamp.valueOf(dateCreate));
@@ -76,12 +70,12 @@ public class DatabaseTasksRepository implements TaskRepository {
     }
 
     @Override
-    public int deleteTask(long id) throws IndexOutOfBoundsException {
+    public int deleteTask(String id) throws IndexOutOfBoundsException {
         try {
             PreparedStatementCreator preparedStatementCreator = connection -> {
                 String sql = "DELETE FROM task WHERE id = ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setLong(1, id);
+                preparedStatement.setString(1, id);
                 return preparedStatement;
             };
             return jdbcOperations.update(preparedStatementCreator);
@@ -101,7 +95,7 @@ public class DatabaseTasksRepository implements TaskRepository {
                 preparedStatement.setString(1, task.getText());
                 preparedStatement.setString(2, task.getStatus());
                 preparedStatement.setTimestamp(3, Timestamp.valueOf(task.getUpdateAT()));
-                preparedStatement.setLong(4, task.getId());
+                preparedStatement.setString(4, task.getId());
                 return preparedStatement;
             };
             int rows = jdbcOperations.update(preparedStatementCreator);

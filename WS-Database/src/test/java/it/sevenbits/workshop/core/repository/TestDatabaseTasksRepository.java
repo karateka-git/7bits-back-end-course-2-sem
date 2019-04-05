@@ -47,7 +47,7 @@ public class TestDatabaseTasksRepository {
 
     @Test
     public void testGetTask() {
-        long taskId = 1;
+        String taskId = "deea44c7-a180-4898-9527-58db0ed34683";
         Task mockTask = mock(Task.class);
 
         when(mockJdbcOperations.queryForObject(anyString(), any(RowMapper.class), anyLong())).thenReturn(mockTask);
@@ -64,7 +64,7 @@ public class TestDatabaseTasksRepository {
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void testGetTaskException() {
-        long taskId = 1;
+        String taskId = "deea44c7-a180-4898-9527-58db0ed34683";
 
         when(mockJdbcOperations.queryForObject(anyString(), any(RowMapper.class), anyLong()))
                 .thenThrow(IncorrectResultSizeDataAccessException.class);
@@ -92,10 +92,8 @@ public class TestDatabaseTasksRepository {
     @Test
     public void testDeleteTask() throws SQLException {
         int expectedDeletedTasks = 1;
-        long taskId = 1;
+        String taskId = "deea44c7-a180-4898-9527-58db0ed34683";
 //        Connection conn = mock(Connection.class);
-//        PreparedStatement preparedStatement = mock(PreparedStatement.class);
-//        when(conn.prepareStatement(any(String.class))).thenReturn(preparedStatement);
         when(mockJdbcOperations.update(any(PreparedStatementCreator.class))).thenReturn(1);
 
         int receivedDeletedTasks = databaseTasksRepository.deleteTask(taskId);
@@ -108,16 +106,36 @@ public class TestDatabaseTasksRepository {
 //        verify(conn, times(1)).prepareStatement(
 //            eq("DELETE FROM task WHERE id = ?")
 //        );
-
-
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void testDeleteTaskException() {
-        long taskId = 1;
+        String taskId = "deea44c7-a180-4898-9527-58db0ed34683";
         when(mockJdbcOperations.update(any(PreparedStatementCreator.class)))
                 .thenThrow(IncorrectResultSizeDataAccessException.class);
         int receivedDeletedTasks = databaseTasksRepository.deleteTask(taskId);
+    }
+
+    @Test
+    public void testUpdateTask() {
+        Task expectedTask = mock(Task.class);
+
+        when(mockJdbcOperations.update(any(PreparedStatementCreator.class))).thenReturn(1);
+
+        Task receivedTask = databaseTasksRepository.updateTask(expectedTask);
+
+        verify(mockJdbcOperations, times(1)).update(
+                any(PreparedStatementCreator.class)
+        );
+        Assert.assertEquals(receivedTask, expectedTask);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testUpdateTaskException() {
+        Task expectedTask = mock(Task.class);
+        when(mockJdbcOperations.update(any(PreparedStatementCreator.class)))
+                .thenThrow(IncorrectResultSizeDataAccessException.class);
+        Task receivedTask = databaseTasksRepository.updateTask(expectedTask);
     }
 
 }
