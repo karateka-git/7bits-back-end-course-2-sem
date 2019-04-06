@@ -1,7 +1,9 @@
 package it.sevenbits.workshop.core.repository;
 
 import it.sevenbits.workshop.core.model.Task;
+import it.sevenbits.workshop.core.service.TaskMapper;
 import it.sevenbits.workshop.web.service.ServiceCurrentDate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -15,18 +17,22 @@ public class DatabaseTasksRepository implements TaskRepository {
         this.jdbcOperations = jdbcOperations;
     }
 
+    @Autowired
+    private TaskMapper taskMapper;
+
     @Override
     public List<Task> getAllTasks() {
+        PreparedStatementCreator preparedStatementCreator = connection -> {
+            String sql = "SELECT id, text, status, createdAT, updateAT FROM task";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, "2");
+            return preparedStatement;
+        };
+        jdbcOperations.query(preparedStatementCreator, taskMapper);
+
         return jdbcOperations.query(
                 "SELECT id, text, status, createdAT, updateAT FROM task",
-                (resultSet, i) -> {
-                    String id = resultSet.getString(1);
-                    String text = resultSet.getString(2);
-                    String status = resultSet.getString(3);
-                    String DateCreate = resultSet.getString(4);
-                    String DateUpdate = resultSet.getString(5);
-                    return new Task(id, text, status, DateCreate, DateUpdate);
-                });
+                    taskMapper);
     }
 
     @Override
@@ -34,14 +40,7 @@ public class DatabaseTasksRepository implements TaskRepository {
         try {
             return jdbcOperations.queryForObject(
                     "SELECT id, text, status, createdAT, updateAT FROM task WHERE id = ?",
-                    (resultSet, i) -> {
-                        String rowId = resultSet.getString(1);
-                        String rowText = resultSet.getString(2);
-                        String rowStatus = resultSet.getString(3);
-                        String rowDateCreate = resultSet.getString(4);
-                        String rowDateUpdate = resultSet.getString(5);
-                        return new Task(rowId, rowText, rowStatus, rowDateCreate, rowDateUpdate);
-                    },id);
+                    taskMapper,id);
         } catch (IncorrectResultSizeDataAccessException e) {
             throw new IndexOutOfBoundsException("Task not found");
         }
