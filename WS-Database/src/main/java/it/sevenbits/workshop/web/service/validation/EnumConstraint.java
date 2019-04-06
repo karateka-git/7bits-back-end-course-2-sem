@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnumConstraint {
     Class<? extends Enum<?>> enumClass();
-    String message() default "Value status is not valid.";
+    String message() default "Value is not valid.";
     Class<?>[]groups() default {};
     Class<? extends Payload>[]payload() default {};
 }
