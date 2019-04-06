@@ -1,21 +1,25 @@
 package it.sevenbits.workshop.web.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 import it.sevenbits.workshop.core.model.EnumValues;
 import it.sevenbits.workshop.web.service.validation.EnumConstraint;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.groups.Default;
 
 public class RequestGetAllTasks {
     @EnumConstraint(enumClass = EnumValues.EnumStatus.class)
     private String status = EnumValues.EnumStatus.inbox.toString();
 
     @EnumConstraint(enumClass = EnumValues.EnumOrder.class)
-    private String order = EnumValues.EnumOrder.DESC.toString();
+    private String order = EnumValues.EnumOrder.desc.toString();
 
     private int page = 1;
 

@@ -3,13 +3,13 @@ package it.sevenbits.workshop.web.service;
 import it.sevenbits.workshop.core.model.EnumValues;
 import it.sevenbits.workshop.core.model.Task;
 import it.sevenbits.workshop.core.repository.TaskRepository;
+import it.sevenbits.workshop.web.model.RequestGetAllTasks;
 import it.sevenbits.workshop.web.model.RequestUpdateTaskValues;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ServiceRepository {
     private final TaskRepository taskRepository;
@@ -22,8 +22,8 @@ public class ServiceRepository {
         return UUID.randomUUID().toString();
     }
 
-    public List<Task> getAllTasks() {
-        return taskRepository.getAllTasks();
+    public List<Task> getAllTasks(RequestGetAllTasks requestBody) {
+        return taskRepository.getAllTasks(requestBody);
     }
 
     public Task getTask(String id) throws IndexOutOfBoundsException {

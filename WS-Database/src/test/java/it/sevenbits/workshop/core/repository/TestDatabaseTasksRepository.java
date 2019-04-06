@@ -2,6 +2,7 @@ package it.sevenbits.workshop.core.repository;
 
 import it.sevenbits.workshop.core.model.EnumValues;
 import it.sevenbits.workshop.core.model.Task;
+import it.sevenbits.workshop.web.model.RequestGetAllTasks;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class TestDatabaseTasksRepository {
     public void testGetAllTasks() {
         List<Task> mockListTasks = mock(List.class);
         when(mockJdbcOperations.query(anyString(), any(RowMapper.class))).thenReturn(mockListTasks);
-        List<Task> excectedList= databaseTasksRepository.getAllTasks();
+        List<Task> excectedList= databaseTasksRepository.getAllTasks(any(RequestGetAllTasks.class));
         verify(mockJdbcOperations, times(1)).query(
                 eq("SELECT id, text, status, createdAT, updateAT FROM task"),
                 any(RowMapper.class)

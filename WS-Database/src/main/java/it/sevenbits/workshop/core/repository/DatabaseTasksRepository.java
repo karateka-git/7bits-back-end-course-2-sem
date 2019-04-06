@@ -2,6 +2,7 @@ package it.sevenbits.workshop.core.repository;
 
 import it.sevenbits.workshop.core.model.Task;
 import it.sevenbits.workshop.core.service.TaskMapper;
+import it.sevenbits.workshop.web.model.RequestGetAllTasks;
 import it.sevenbits.workshop.web.service.ServiceCurrentDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -21,18 +22,33 @@ public class DatabaseTasksRepository implements TaskRepository {
     private TaskMapper taskMapper;
 
     @Override
-    public List<Task> getAllTasks() {
+    public List<Task> getAllTasks(RequestGetAllTasks requestBody) {
+        int getOffset = (requestBody.getPage()-1)*requestBody.getSize();
+
         PreparedStatementCreator preparedStatementCreator = connection -> {
-            String sql = "SELECT id, text, status, createdAT, updateAT FROM task";
+            String sql;
+            if (requestBody.getOrder().equals("asc")) {
+                sql = "SELECT id, text, status, createdAT, updateAT FROM task " +
+                        "where status=? " +
+                        "order by createdAT asc " +
+                        "limit ? offset ?";
+            } else {
+                sql = "SELECT id, text, status, createdAT, updateAT FROM task " +
+                        "where status=? " +
+                        "order by createdAT desc " +
+                        "limit ? offset ?";
+            }
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, "2");
+            preparedStatement.setString(1, requestBody.getStatus());
+            preparedStatement.setInt(2, requestBody.getSize());
+            preparedStatement.setInt(3, getOffset);
             return preparedStatement;
         };
-        jdbcOperations.query(preparedStatementCreator, taskMapper);
+        return jdbcOperations.query(preparedStatementCreator, taskMapper);
 
-        return jdbcOperations.query(
-                "SELECT id, text, status, createdAT, updateAT FROM task",
-                    taskMapper);
+//        return jdbcOperations.query(
+//                "SELECT id, text, status, createdAT, updateAT FROM task",
+//                    taskMapper);
     }
 
     @Override

@@ -2,6 +2,7 @@ package it.sevenbits.workshop.web.controllers;
 
 
 import it.sevenbits.workshop.web.model.RequestCreateTask;
+import it.sevenbits.workshop.web.model.RequestGetAllTasks;
 import it.sevenbits.workshop.web.model.RequestUpdateTaskValues;
 import it.sevenbits.workshop.core.model.Task;
 import it.sevenbits.workshop.web.service.ServiceRepository;
@@ -26,8 +27,8 @@ public class TaskController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<List<Task>> getAllTasks() {
-        List<Task> answer = serviceRepository.getAllTasks();
+    public ResponseEntity<List<Task>> getAllTasks(@Valid @RequestBody(required=false) RequestGetAllTasks requestBody) {
+        List<Task> answer = serviceRepository.getAllTasks(requestBody);
         return ResponseEntity.status(HttpStatus.OK).body(answer);
     }
 
