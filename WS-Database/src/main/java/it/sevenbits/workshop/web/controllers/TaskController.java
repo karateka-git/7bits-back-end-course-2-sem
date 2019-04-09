@@ -27,8 +27,8 @@ public class TaskController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<List<Task>> getAllTasks(@Valid @RequestBody(required=false) RequestGetAllTasks requestBody) {
-        List<Task> answer = serviceRepository.getAllTasks(requestBody);
+    public ResponseEntity<List> getAllTasks(@Valid @ModelAttribute() RequestGetAllTasks requestBody) {
+        List answer = serviceRepository.getAllTasks(requestBody);
         return ResponseEntity.status(HttpStatus.OK).body(answer);
     }
 
@@ -39,15 +39,13 @@ public class TaskController {
             Task task = serviceRepository.getTask((id));
             return ResponseEntity.status(HttpStatus.OK).body(task);
         } catch (IndexOutOfBoundsException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
         }
     }
 
     @RequestMapping(method = RequestMethod.POST)
-
     @ResponseBody
     public ResponseEntity<Task> create(@Valid @RequestBody RequestCreateTask requestBody) {
-
         Task createdTask = serviceRepository.createTask(requestBody.getText());
         URI location = UriComponentsBuilder.fromPath("/tasks/")
                 .path(String.valueOf(createdTask.getId()))
@@ -64,7 +62,7 @@ public class TaskController {
             Task task = serviceRepository.updateTask(id, requestBody);
             return ResponseEntity.status(HttpStatus.OK).body(task);
         } catch (IndexOutOfBoundsException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
         }
 
     }
@@ -76,7 +74,7 @@ public class TaskController {
             int answer = serviceRepository.deleteTask(id);
             return ResponseEntity.status(HttpStatus.OK).body(answer);
         } catch (IndexOutOfBoundsException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
         }
     }
 }

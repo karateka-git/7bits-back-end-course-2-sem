@@ -45,10 +45,6 @@ public class DatabaseTasksRepository implements TaskRepository {
             return preparedStatement;
         };
         return jdbcOperations.query(preparedStatementCreator, taskMapper);
-
-//        return jdbcOperations.query(
-//                "SELECT id, text, status, createdAT, updateAT FROM task",
-//                    taskMapper);
     }
 
     @Override
@@ -99,7 +95,6 @@ public class DatabaseTasksRepository implements TaskRepository {
         }
     }
 
-    //DO IT USE MAP
     @Override
     public Task updateTask(Task task) throws IndexOutOfBoundsException {
         try {

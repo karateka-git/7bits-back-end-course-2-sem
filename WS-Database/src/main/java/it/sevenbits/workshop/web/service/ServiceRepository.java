@@ -5,10 +5,6 @@ import it.sevenbits.workshop.core.model.Task;
 import it.sevenbits.workshop.core.repository.TaskRepository;
 import it.sevenbits.workshop.web.model.RequestGetAllTasks;
 import it.sevenbits.workshop.web.model.RequestUpdateTaskValues;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.sql.Timestamp;
 import java.util.*;
 
 public class ServiceRepository {

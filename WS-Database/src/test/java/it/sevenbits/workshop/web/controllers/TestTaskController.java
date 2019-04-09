@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -29,13 +30,12 @@ public class TestTaskController {
         taskController = new TaskController(mockServiceRepository);
     }
 
-    @Ignore
     @Test
     public void testGetAllItems() {
         List<Task> mockTasks = mock(List.class);
         when(mockServiceRepository.getAllTasks(any(RequestGetAllTasks.class))).thenReturn(mockTasks);
 
-        ResponseEntity<List<Task>> answer =  taskController.getAllTasks(any(RequestGetAllTasks.class));
+        ResponseEntity<List> answer =  taskController.getAllTasks(any(RequestGetAllTasks.class));
         verify(mockServiceRepository, times(1)).getAllTasks(any(RequestGetAllTasks.class));
         Assert.assertEquals(HttpStatus.OK, answer.getStatusCode());
         Assert.assertSame(mockTasks, answer.getBody());
