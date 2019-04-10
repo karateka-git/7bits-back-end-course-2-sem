@@ -1,5 +1,6 @@
 package it.sevenbits.workshop.core.repository;
 
+import it.sevenbits.workshop.core.model.Meta;
 import it.sevenbits.workshop.core.model.Task;
 import it.sevenbits.workshop.core.service.TaskMapper;
 import it.sevenbits.workshop.web.model.RequestGetAllTasks;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 
 import java.sql.*;
 import java.util.List;
@@ -22,29 +24,36 @@ public class DatabaseTasksRepository implements TaskRepository {
     private TaskMapper taskMapper;
 
     @Override
-    public List<Task> getAllTasks(RequestGetAllTasks requestBody) {
-        int getOffset = (requestBody.getPage()-1)*requestBody.getSize();
+    public List<Integer> getCountTasks(RequestGetAllTasks requestBody) {
+        String sql = String.format("SELECT count(*) as total FROM task " +
+                "where status=%s ", requestBody.getStatus());
+//        PreparedStatementSetter preparedStatementSetter = preparedStatement ->
+//                preparedStatement.setString(1, requestBody.getStatus());
+        return jdbcOperations.query(sql, (resultSet, i) -> resultSet.getInt(1));
+    }
 
-        PreparedStatementCreator preparedStatementCreator = connection -> {
-            String sql;
-            if (requestBody.getOrder().equals("asc")) {
-                sql = "SELECT id, text, status, createdAT, updateAT FROM task " +
-                        "where status=? " +
-                        "order by createdAT asc " +
-                        "limit ? offset ?";
-            } else {
-                sql = "SELECT id, text, status, createdAT, updateAT FROM task " +
-                        "where status=? " +
-                        "order by createdAT desc " +
-                        "limit ? offset ?";
-            }
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+    @Override
+    public List<Task> getAllTasks(RequestGetAllTasks requestBody) {
+        String sql = String.format("SELECT id, text, status, createdAT, updateAT FROM task " +
+                    "where status=? " +
+                    "order by createdAT %s " +
+                    "limit ? offset ?", requestBody.getOrder());
+
+        int getOffset = (requestBody.getPage()-1)*requestBody.getSize();
+        PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
             preparedStatement.setString(1, requestBody.getStatus());
             preparedStatement.setInt(2, requestBody.getSize());
             preparedStatement.setInt(3, getOffset);
-            return preparedStatement;
         };
-        return jdbcOperations.query(preparedStatementCreator, taskMapper);
+
+        return jdbcOperations.query(sql, preparedStatementSetter, ((resultSet, i) -> {
+            String idd = resultSet.getString(1);
+            String text = resultSet.getString(2);
+            String status = resultSet.getString(3);
+            String DateCreate = resultSet.getString(4);
+            String DateUpdate = resultSet.getString(5);
+            return new Task(idd, text, status, DateCreate, DateUpdate);
+        }));
     }
 
     @Override
@@ -52,7 +61,15 @@ public class DatabaseTasksRepository implements TaskRepository {
         try {
             return jdbcOperations.queryForObject(
                     "SELECT id, text, status, createdAT, updateAT FROM task WHERE id = ?",
-                    taskMapper,id);
+                    ((resultSet, i) -> {
+                        String idd = resultSet.getString(1);
+                        String text = resultSet.getString(2);
+                        String status = resultSet.getString(3);
+                        String DateCreate = resultSet.getString(4);
+                        String DateUpdate = resultSet.getString(5);
+                        return new Task(idd, text, status, DateCreate, DateUpdate);
+                    })
+                    , id);
         } catch (IncorrectResultSizeDataAccessException e) {
             throw new IndexOutOfBoundsException("Task not found");
         }
@@ -66,30 +83,26 @@ public class DatabaseTasksRepository implements TaskRepository {
         String dateCreate = task.getCreatedAT();
         String dateUpdate = task.getUpdateAT();
 
-        PreparedStatementCreator preparedStatementCreator = connection -> {
-            String sql = "INSERT INTO task (id, text, status, createdAT, updateAT) VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        String sql = "INSERT INTO task (id, text, status, createdAT, updateAT) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
             preparedStatement.setString(1, id);
             preparedStatement.setString(2, text);
             preparedStatement.setString(3, status);
             preparedStatement.setTimestamp(4, Timestamp.valueOf(dateCreate));
             preparedStatement.setTimestamp(5, Timestamp.valueOf(dateUpdate));
-            return preparedStatement;
         };
-        int rows = jdbcOperations.update(preparedStatementCreator);
+        int rows = jdbcOperations.update(sql, preparedStatementSetter);
         return task;
     }
 
     @Override
     public int deleteTask(String id) throws IndexOutOfBoundsException {
         try {
-            PreparedStatementCreator preparedStatementCreator = connection -> {
-                String sql = "DELETE FROM task WHERE id = ?";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            String sql = "DELETE FROM task WHERE id = ?";
+            PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
                 preparedStatement.setString(1, id);
-                return preparedStatement;
             };
-            return jdbcOperations.update(preparedStatementCreator);
+            return jdbcOperations.update(sql, preparedStatementSetter);
         } catch (IncorrectResultSizeDataAccessException e) {
             throw new IndexOutOfBoundsException("Task not found");
         }
@@ -99,16 +112,15 @@ public class DatabaseTasksRepository implements TaskRepository {
     public Task updateTask(Task task) throws IndexOutOfBoundsException {
         try {
             task.setUpdateAT(ServiceCurrentDate.getCurrentDate());
-            PreparedStatementCreator preparedStatementCreator = connection -> {
-                String sql = "UPDATE task SET text = ?, status = ?, updateAT = ? WHERE id = ?";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            String sql = "UPDATE task SET text = ?, status = ?, updateAT = ? WHERE id = ?";
+            PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
                 preparedStatement.setString(1, task.getText());
                 preparedStatement.setString(2, task.getStatus());
                 preparedStatement.setTimestamp(3, Timestamp.valueOf(task.getUpdateAT()));
                 preparedStatement.setString(4, task.getId());
-                return preparedStatement;
             };
-            int rows = jdbcOperations.update(preparedStatementCreator);
+            int rows = jdbcOperations.update(sql, preparedStatementSetter);
             return task;
         } catch (IncorrectResultSizeDataAccessException e) {
             throw new IndexOutOfBoundsException("Task not found");

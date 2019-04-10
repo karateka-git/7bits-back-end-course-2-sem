@@ -15,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/tasks")
@@ -27,8 +28,8 @@ public class TaskController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<List> getAllTasks(@Valid @ModelAttribute() RequestGetAllTasks requestBody) {
-        List answer = serviceRepository.getAllTasks(requestBody);
+    public ResponseEntity<Map> getAllTasks(@Valid @ModelAttribute() RequestGetAllTasks requestBody) {
+        Map answer = serviceRepository.getAllTasks(requestBody);
         return ResponseEntity.status(HttpStatus.OK).body(answer);
     }
 

@@ -1,11 +1,13 @@
 package it.sevenbits.workshop.core.repository;
 
+import it.sevenbits.workshop.core.model.Meta;
 import it.sevenbits.workshop.core.model.Task;
 import it.sevenbits.workshop.web.model.RequestGetAllTasks;
 
 import java.util.List;
 
 public interface TaskRepository {
+    List<Integer> getCountTasks(RequestGetAllTasks requestBody);
     List<Task> getAllTasks(RequestGetAllTasks requestBody);
     Task getTask(String id) throws IndexOutOfBoundsException;
     Task createTask(Task task);
