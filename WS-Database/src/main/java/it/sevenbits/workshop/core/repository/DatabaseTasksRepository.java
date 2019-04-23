@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DatabaseTasksRepository implements TaskRepository {
     private JdbcOperations jdbcOperations;
-    public DatabaseTasksRepository(JdbcOperations jdbcOperations) {
+    public DatabaseTasksRepository(final JdbcOperations jdbcOperations) {
         this.jdbcOperations = jdbcOperations;
     }
 
@@ -22,7 +22,7 @@ public class DatabaseTasksRepository implements TaskRepository {
     private TaskMapper taskMapper;
 
     @Override
-    public List<Integer> getCountTasks(RequestGetAllTasks requestBody) {
+    public List<Integer> getCountTasks(final RequestGetAllTasks requestBody) {
         String sql = String.format("SELECT count(*) as total FROM task " +
                 "where status='%s' ", requestBody.getStatus());
         return jdbcOperations.query(sql, (resultSet, i) -> resultSet.getInt(1));
