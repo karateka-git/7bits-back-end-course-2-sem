@@ -12,12 +12,12 @@ import java.sql.SQLException;
 public class TaskMapper implements RowMapper<Task> {
 
     @Override
-    public Task mapRow(ResultSet resultSet, int i) throws SQLException {
-            String id = resultSet.getString(1);
-            String text = resultSet.getString(2);
-            String status = resultSet.getString(3);
-            String DateCreate = resultSet.getString(4);
-            String DateUpdate = resultSet.getString(5);
-            return new Task(id, text, status, DateCreate, DateUpdate);
+    public Task mapRow(final ResultSet resultSet, final int i) throws SQLException {
+            String id = resultSet.getString("id");
+            String text = resultSet.getString("text");
+            String status = resultSet.getString("status");
+            String dateCreate = resultSet.getString("createdAT");
+            String dateUpdate = resultSet.getString("updateAT");
+            return new Task(id, text, status, dateCreate, dateUpdate);
     }
 }
