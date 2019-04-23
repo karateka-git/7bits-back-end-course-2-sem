@@ -3,12 +3,15 @@ package it.sevenbits.workshop.core.service;
 import it.sevenbits.workshop.core.model.Task;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
-@Component
+/**
+ * task mapper for query
+ */
+@Service
 public class TaskMapper implements RowMapper<Task> {
 
     @Override

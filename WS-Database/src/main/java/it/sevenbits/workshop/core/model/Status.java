@@ -1,10 +1,16 @@
 package it.sevenbits.workshop.core.model;
 
+/**
+ * model for status
+ */
 public class Status {
     private String status;
 
-    public Status(String status) {
-        //this.status = EnumValues.EnumStatus.inbox.toString();
+    /**
+     *
+     * @param status - status enum
+     */
+    public Status(final String status) {
         this.status = EnumValues.EnumStatus.valueOf(status).toString();
     }
 
@@ -12,7 +18,7 @@ public class Status {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(final String status) {
         this.status = status;
     }
 }

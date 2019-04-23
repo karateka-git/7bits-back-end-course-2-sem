@@ -1,5 +1,8 @@
 package it.sevenbits.workshop.core.model;
 
+/**
+ * model task to store in the database
+ */
 public class Task {
     private final String id;
 
@@ -11,7 +14,14 @@ public class Task {
 
     private String updateAT;
 
-    public Task(String id, String text, String status, String createdAT) {
+    /**
+     *
+     * @param id - id
+     * @param text - text
+     * @param status - status
+     * @param createdAT - created date
+     */
+    public Task(final String id, final String text, final String status, final String createdAT) {
         this.id = id;
         this.text = text;
         this.status = new Status(status);
@@ -19,7 +29,16 @@ public class Task {
         this.updateAT = createdAT;
     }
 
-    public Task(String id, String text, String status, String createdAT, String updateAT) {
+    /**
+     *
+     *  @param id - id
+     * @param text - text
+     * @param status - status
+     * @param createdAT - created date
+     * @param updateAT - update date
+     */
+    public Task(final String id, final String text, final String status,
+                final String createdAT, final String updateAT) {
         this.id = id;
         this.text = text;
         this.status = new Status(status);
@@ -33,25 +52,30 @@ public class Task {
     public String getText() {
         return text;
     }
-    public void setText(String text) {
+    public void setText(final String text) {
         this.text = text;
     }
     public String getStatus() {
         return status.getStatus();
     }
-    public void setStatus(String status) {
+
+    /**
+     *
+     * @param status - status
+     */
+    public void setStatus(final String status) {
         this.status.setStatus(status);
     }
     public String getCreatedAT() {
         return createdAT;
     }
-    public void setCreatedAT(String createdAT) {
+    public void setCreatedAT(final String createdAT) {
         this.createdAT = createdAT;
     }
     public String getUpdateAT() {
         return updateAT;
     }
-    public void setUpdateAT(String updateAT) {
+    public void setUpdateAT(final String updateAT) {
         this.updateAT = updateAT;
     }
 }

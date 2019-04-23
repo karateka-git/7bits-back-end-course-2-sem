@@ -8,10 +8,17 @@ import it.sevenbits.workshop.web.model.RequestGetAllTasks;
 import it.sevenbits.workshop.web.model.RequestUpdateTaskValues;
 import java.util.*;
 
+/**
+ * service for repository
+ */
 public class ServiceRepository {
     private final TaskRepository taskRepository;
 
-    public ServiceRepository(TaskRepository tasksRepository){
+    /**
+     *
+     * @param tasksRepository - taskRepository
+     */
+    public ServiceRepository(final TaskRepository tasksRepository) {
         this.taskRepository = tasksRepository;
     }
 
@@ -19,20 +26,26 @@ public class ServiceRepository {
         return UUID.randomUUID().toString();
     }
 
-    public Map getAllTasks(RequestGetAllTasks requestBody) {
+    /**
+     *
+     * @param requestBody - requestBody
+     * @return - Map for answering getAllTasks
+     */
+    public Map getAllTasks(final RequestGetAllTasks requestBody) {
         int total = taskRepository.getCountTasks(requestBody).get(0);
-        final int lastPage = total%requestBody.getSize() > 0? total/requestBody.getSize()+1:total/requestBody.getSize();
+        final int lastPage = total % requestBody.getSize() > 0 ?
+                total / requestBody.getSize() + 1 : total / requestBody.getSize();
         final int firstPage = 1;
         String first = String.format("/tasks?status=%s&order=%s&page=%d&size=%d",
-                requestBody.getStatus(),requestBody.getOrder(), firstPage, requestBody.getSize());
+                requestBody.getStatus(), requestBody.getOrder(), firstPage, requestBody.getSize());
         String last = String.format("/tasks?status=%s&order=%s&page=%d&size=%d",
-                requestBody.getStatus(),requestBody.getOrder(), lastPage, requestBody.getSize());
+                requestBody.getStatus(), requestBody.getOrder(), lastPage, requestBody.getSize());
         String next = String.format("/tasks?status=%s&order=%s&page=%d&size=%d",
-                requestBody.getStatus(),requestBody.getOrder(),
-                requestBody.getPage()+1 > lastPage?lastPage:requestBody.getPage()+1, requestBody.getSize());
+                requestBody.getStatus(), requestBody.getOrder(),
+                requestBody.getPage() + 1 > lastPage ? lastPage : requestBody.getPage()+ 1, requestBody.getSize());
         String prev = String.format("/tasks?status=%s&order=%s&page=%d&size=%d",
-                requestBody.getStatus(),requestBody.getOrder(),
-                requestBody.getPage()-1 < firstPage?firstPage:requestBody.getPage()-1, requestBody.getSize());
+                requestBody.getStatus(), requestBody.getOrder(),
+                requestBody.getPage() - 1 < firstPage ? firstPage : requestBody.getPage() - 1, requestBody.getSize());
 
         Meta meta = new Meta(total, requestBody.getPage(), requestBody.getSize(), next, prev, first, last);
         List listTask = taskRepository.getAllTasks(requestBody);
@@ -42,11 +55,22 @@ public class ServiceRepository {
         return resultMap;
     }
 
-    public Task getTask(String id) throws IndexOutOfBoundsException {
+    /**
+     *
+     * @param id - task id
+     * @return - task with id
+     * @throws IndexOutOfBoundsException - exception not found task with id
+     */
+    public Task getTask(final String id) throws IndexOutOfBoundsException {
         return taskRepository.getTask(id);
     }
 
-    public Task createTask(String text) {
+    /**
+     *
+     * @param text - text for task
+     * @return - new task
+     */
+    public Task createTask(final String text) {
         String id = getNextId();
         String status = EnumValues.EnumStatus.inbox.toString();
         String date = ServiceCurrentDate.getCurrentDate();
@@ -54,11 +78,25 @@ public class ServiceRepository {
         return taskRepository.createTask(task);
     }
 
-    public int deleteTask(String id) throws IndexOutOfBoundsException {
+    /**
+     *
+     * @param id - id
+     * @return - number of remote tasks
+     * @throws IndexOutOfBoundsException - exception not found task with id
+     */
+    public int deleteTask(final String id) throws IndexOutOfBoundsException {
         return taskRepository.deleteTask(id);
     }
 
-    public Task updateTask(String id, RequestUpdateTaskValues requestBody) throws IndexOutOfBoundsException {
+    /**
+     *
+     * @param id - id
+     * @param requestBody - parameters for request updateTask
+     * @return - updated task
+     * @throws IndexOutOfBoundsException - exception not found task with id
+     */
+    public Task updateTask(final String id, final RequestUpdateTaskValues requestBody)
+            throws IndexOutOfBoundsException {
         Task task = getTask((id));
         if (!requestBody.getText().equals("null")) {
             task.setText(requestBody.getText());

@@ -14,7 +14,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -22,20 +21,34 @@ import java.util.Map;
 public class TaskController {
     private final ServiceRepository serviceRepository;
 
-    public TaskController(ServiceRepository serviceRepository){
+    /**
+     *
+     * @param serviceRepository service repository for taskController
+     */
+    public TaskController(final ServiceRepository serviceRepository) {
         this.serviceRepository = serviceRepository;
     }
 
+    /**
+     *
+     * @param requestBody - model for validation a request
+     * @return - ResponseEntity<Map> response
+     */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<Map> getAllTasks(@Valid @ModelAttribute() RequestGetAllTasks requestBody) {
+    public ResponseEntity<Map> getAllTasks(final @Valid @ModelAttribute() RequestGetAllTasks requestBody) {
         Map answer = serviceRepository.getAllTasks(requestBody);
         return ResponseEntity.status(HttpStatus.OK).body(answer);
     }
 
-    @RequestMapping(value = "/{taskID}",method = RequestMethod.GET)
+    /**
+     *
+     * @param id - UUID task
+     * @return - ResponseEntity
+     */
+    @RequestMapping(value = "/{taskID}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity getTask(@PathVariable("taskID") String id) {
+    public ResponseEntity getTask(final @PathVariable("taskID") String id) {
         try {
             Task task = serviceRepository.getTask((id));
             return ResponseEntity.status(HttpStatus.OK).body(task);
@@ -44,9 +57,14 @@ public class TaskController {
         }
     }
 
+    /**
+     *
+     * @param requestBody - model for validation a request
+     * @return - ResponseEntity
+     */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Task> create(@Valid @RequestBody RequestCreateTask requestBody) {
+    public ResponseEntity<Task> create(final @Valid @RequestBody RequestCreateTask requestBody) {
         Task createdTask = serviceRepository.createTask(requestBody.getText());
         URI location = UriComponentsBuilder.fromPath("/tasks/")
                 .path(String.valueOf(createdTask.getId()))
@@ -55,10 +73,16 @@ public class TaskController {
         return ResponseEntity.created(location).body(createdTask);
     }
 
-    @RequestMapping(value = "/{taskID}",method = RequestMethod.PATCH)
+    /**
+     *
+     * @param id - UUID task
+     * @param requestBody - model for validation a request
+     * @return - ResponseEntity
+     */
+    @RequestMapping(value = "/{taskID}", method = RequestMethod.PATCH)
     @ResponseBody
-    public ResponseEntity updateTask(@PathVariable("taskID") String id,
-                                     @Valid @RequestBody RequestUpdateTaskValues requestBody) {
+    public ResponseEntity updateTask(final @PathVariable("taskID") String id,
+                                     final @Valid @RequestBody RequestUpdateTaskValues requestBody) {
         try {
             Task task = serviceRepository.updateTask(id, requestBody);
             return ResponseEntity.status(HttpStatus.OK).body(task);
@@ -68,9 +92,14 @@ public class TaskController {
 
     }
 
-    @RequestMapping(value = "/{taskID}",method = RequestMethod.DELETE)
+    /**
+     *
+     * @param id - UUID task
+     * @return - ResponseEntity
+     */
+    @RequestMapping(value = "/{taskID}", method = RequestMethod.DELETE)
     @ResponseBody
-    public ResponseEntity deleteTask(@PathVariable("taskID") String id) {
+    public ResponseEntity deleteTask(final @PathVariable("taskID") String id) {
         try {
             int answer = serviceRepository.deleteTask(id);
             return ResponseEntity.status(HttpStatus.OK).body(answer);

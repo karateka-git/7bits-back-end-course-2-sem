@@ -12,8 +12,16 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import java.sql.*;
 import java.util.List;
 
+/**
+ * DatabaseTasksRepository
+ */
 public class DatabaseTasksRepository implements TaskRepository {
     private JdbcOperations jdbcOperations;
+
+    /**
+     *
+     * @param jdbcOperations - JdbcOperations
+     */
     public DatabaseTasksRepository(final JdbcOperations jdbcOperations) {
         this.jdbcOperations = jdbcOperations;
     }
@@ -78,7 +86,7 @@ public class DatabaseTasksRepository implements TaskRepository {
     }
 
     @Override
-    public int deleteTask(String id) throws IndexOutOfBoundsException {
+    public int deleteTask(final String id) throws IndexOutOfBoundsException {
         try {
             String sql = "DELETE FROM task WHERE id = ?";
             PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
@@ -91,7 +99,7 @@ public class DatabaseTasksRepository implements TaskRepository {
     }
 
     @Override
-    public Task updateTask(Task task) throws IndexOutOfBoundsException {
+    public Task updateTask(final Task task) throws IndexOutOfBoundsException {
         try {
             task.setUpdateAT(ServiceCurrentDate.getCurrentDate());
 

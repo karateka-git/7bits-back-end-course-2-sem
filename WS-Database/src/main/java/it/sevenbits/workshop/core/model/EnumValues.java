@@ -1,6 +1,16 @@
 package it.sevenbits.workshop.core.model;
 
+/**
+ *
+ */
 public class EnumValues {
-    public enum EnumStatus {inbox, done}
-    public enum EnumOrder {asc, desc}
+    /**
+     * enum for status
+     */
+    public enum EnumStatus { inbox, done }
+
+    /**
+     * enum for order
+     */
+    public enum EnumOrder { asc, desc }
 }
