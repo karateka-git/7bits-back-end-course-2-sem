@@ -14,7 +14,7 @@ public interface TaskRepository {
      * @param requestBody - model for request getAllTasks
      * @return int - number of tasks
      */
-    List<Integer> getCountTasks(RequestGetAllTasks requestBody);
+    int getCountTasks(RequestGetAllTasks requestBody);
 
     /**
      *

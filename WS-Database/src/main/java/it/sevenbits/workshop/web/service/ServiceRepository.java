@@ -32,7 +32,7 @@ public class ServiceRepository {
      * @return - Map for answering getAllTasks
      */
     public Map getAllTasks(final RequestGetAllTasks requestBody) {
-        int total = taskRepository.getCountTasks(requestBody).get(0);
+        int total = taskRepository.getCountTasks(requestBody);
         final int lastPage = total % requestBody.getSize() > 0 ?
                 total / requestBody.getSize() + 1 : total / requestBody.getSize();
         final int firstPage = 1;
