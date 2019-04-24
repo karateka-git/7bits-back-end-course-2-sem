@@ -102,7 +102,7 @@ public class TaskController {
     public ResponseEntity deleteTask(final @PathVariable("taskID") String id) {
         try {
             int answer = serviceRepository.deleteTask(id);
-            return ResponseEntity.status(HttpStatus.OK).body(answer);
+            return ResponseEntity.status(HttpStatus.OK).body("");
         } catch (IndexOutOfBoundsException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
         }

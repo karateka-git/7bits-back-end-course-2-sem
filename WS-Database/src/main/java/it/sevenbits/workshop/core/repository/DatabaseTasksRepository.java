@@ -87,33 +87,35 @@ public class DatabaseTasksRepository implements TaskRepository {
 
     @Override
     public int deleteTask(final String id) throws IndexOutOfBoundsException {
-        try {
-            String sql = "DELETE FROM task WHERE id = ?";
-            PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
-                preparedStatement.setString(1, id);
-            };
-            return jdbcOperations.update(sql, preparedStatementSetter);
-        } catch (IncorrectResultSizeDataAccessException e) {
+
+        String sql = "DELETE FROM task WHERE id = ?";
+        PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
+            preparedStatement.setString(1, id);
+        };
+        int rows = jdbcOperations.update(sql, preparedStatementSetter);
+        if (rows == 0) {
             throw new IndexOutOfBoundsException("Task not found");
         }
+        return rows;
     }
 
     @Override
     public Task updateTask(final Task task) throws IndexOutOfBoundsException {
-        try {
-            task.setUpdateAT(ServiceCurrentDate.getCurrentDate());
 
-            String sql = "UPDATE task SET text = ?, status = ?, updateAT = ? WHERE id = ?";
-            PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
-                preparedStatement.setString(1, task.getText());
-                preparedStatement.setString(2, task.getStatus());
-                preparedStatement.setTimestamp(3, Timestamp.valueOf(task.getUpdateAT()));
-                preparedStatement.setString(4, task.getId());
-            };
-            int rows = jdbcOperations.update(sql, preparedStatementSetter);
-            return task;
-        } catch (IncorrectResultSizeDataAccessException e) {
-            throw new IndexOutOfBoundsException("Task not found");
+        task.setUpdateAT(ServiceCurrentDate.getCurrentDate());
+
+        String sql = "UPDATE task SET text = ?, status = ?, updateAT = ? WHERE id = ?";
+        PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
+            preparedStatement.setString(1, task.getText());
+            preparedStatement.setString(2, task.getStatus());
+            preparedStatement.setTimestamp(3, Timestamp.valueOf(task.getUpdateAT()));
+            preparedStatement.setString(4, task.getId());
+        };
+        int rows = jdbcOperations.update(sql, preparedStatementSetter);
+        if (rows == 0) {
+            throw new IncorrectResultSizeDataAccessException(0);
         }
+        return task;
+
     }
 }
