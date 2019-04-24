@@ -78,8 +78,8 @@ public class DatabaseTasksRepository implements TaskRepository {
             preparedStatement.setString(1, id);
             preparedStatement.setString(2, text);
             preparedStatement.setString(3, status);
-            preparedStatement.setTimestamp(4, Timestamp.valueOf(dateCreate));
-            preparedStatement.setTimestamp(5, Timestamp.valueOf(dateUpdate));
+            preparedStatement.setString(4, dateCreate);
+            preparedStatement.setString(5, dateUpdate);
         };
         int rows = jdbcOperations.update(sql, preparedStatementSetter);
         return task;
@@ -108,7 +108,7 @@ public class DatabaseTasksRepository implements TaskRepository {
         PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
             preparedStatement.setString(1, task.getText());
             preparedStatement.setString(2, task.getStatus());
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(task.getUpdateAT()));
+            preparedStatement.setString(3, task.getUpdateAT());
             preparedStatement.setString(4, task.getId());
         };
         int rows = jdbcOperations.update(sql, preparedStatementSetter);

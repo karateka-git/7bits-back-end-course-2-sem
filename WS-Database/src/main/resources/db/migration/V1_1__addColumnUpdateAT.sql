@@ -1,1 +1,1 @@
-alter table task add column updateAT timestamp;
+alter table task add column updateAT varchar;
